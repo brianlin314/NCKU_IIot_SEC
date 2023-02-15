@@ -8,7 +8,7 @@ dir_path 是 filebeat 收集 alert json files 的路徑, 預設為 /var/ossec/lo
 
 ## 環境安裝
 ```
-git clone https://github.com/cliff0917/dashboard.git
+git clone https://github.com/brianlin314/NCKU_IIot_SEC.git
 sudo apt-get install -y mongodb
 conda create -y -n dashboard python=3.7
 conda activate dashboard

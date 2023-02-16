@@ -1,5 +1,5 @@
 # 引用外部套件
-import warnings, os, globals
+import warnings, os, globals_variable
 import dash
 import webbrowser
 from dash import dcc, html, callback
@@ -24,7 +24,7 @@ content = html.Div(id='content')
 
 def serve_layout():
     # 得到最新狀態的 db
-    globals.initialize()
+    globals_variable.initialize()
     layout = html.Div(
         [
             url,

@@ -5,7 +5,7 @@ import dash_html_components as html
 import pandas as pd
 import json
 from pandas import json_normalize
-import globals
+import globals_variable
 from components import ai_result
 from datetime import date
 import dash

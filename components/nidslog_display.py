@@ -5,11 +5,12 @@ import json
 from pandas import json_normalize
 from datetime import date
 import dash_html_components as html
+import os
 
-import globals
+import globals_variable
 from components import nids_logtojson
 table_style = {
-    "margin-left": "1rem",
+    "margi n-left": "1rem",
     "margin-right": "1rem",
     "position":"relative",
     "left":"0.5rem",
@@ -23,11 +24,14 @@ table_style = {
 def update(ip):
     today = date.today()
     today = today.strftime("%m/%d/%Y")
-    nids_logtojson.log2json(globals.nidsdirpath+"/fast.log")
+    cmd = 'sudo chmod  777 -R /var/log/' # 更改資料夾權限
+    password = globals_variable.sudoPassword
+    os.system('echo %s | sudo -S %s' % (password, cmd))
+    nids_logtojson.log2json(globals_variable.nidsdirpath+"/fast.log")
 
     #讀取json檔, 篩選今天的log內容
     global df
-    df = pd.read_json(globals.nidsdirpath+"/fast.json")
+    df = pd.read_json(globals_variable.nidsdirpath+"/fast.json")
     mask = df['Destination'] == ip
     df1 = df.loc[mask]
     mask1 = df['Source'] == ip

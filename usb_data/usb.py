@@ -2,7 +2,7 @@ import json
 from time import sleep
 import ast
 import os
-import globals
+import globals_variable
 # 去讀wazuh log檔，找出目前有多少usb插在端點上，且列出詳細資訊
 def change_permission(dir_path, sudoPassword):
     paths = dir_path.split('/')
@@ -24,7 +24,10 @@ def usbdf():
     usb_file = open('./usb_data/usb.json', 'w', newline='')
     cdb=open("./usb_data/usb_cdb.json","r")
     cdb_line=cdb.readlines()
-    change_permission("/var/ossec/logs/alerts/alerts.json", "0314")
+    #change_permission("/var/ossec/logs/alerts/alerts.json", passw)
+    cmd = 'sudo chmod  777 -R /var/ossec/logs/alerts/' # 更改wazuh 底下資料夾權限
+    password = globals_variable.sudoPassword
+    os.system('echo %s | sudo -S %s' % (password, cmd))
     with open("/var/ossec/logs/alerts/alerts.json","r") as jsonfiles:
         lines=jsonfiles.readlines()
         usb_detail={}
@@ -84,4 +87,4 @@ def usbdf():
     usb_info.write("]")
     usb_info.close()
     f.close()
-usbdf()
+# usbdf()

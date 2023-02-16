@@ -5,7 +5,7 @@ import feffery_antd_components as fac
 import dash
 import dash_html_components as html
 
-import globals
+import globals_variable
 from process_time import process_time
 from components import datePicker, history_display
 
@@ -66,7 +66,7 @@ def serve_layout():
                             fac.AntdSelect(
                                 id = 'hisagentselect',
                                 placeholder='Agent:',
-                                options = globals.agent_options,
+                                options = globals_variable.agent_options,
                                 style=dropdown_style
                             ),
                             dcc.Loading(
@@ -102,7 +102,7 @@ def update(n_clicks, value, time):
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
     if(value=='Raspberry Pi'):
-        return history_display.update(startDate, endDate, freqs, globals.agent_pi_ip)
+        return history_display.update(startDate, endDate, freqs, globals_variable.agent_pi_ip)
     elif(value=='PC'):
-        return history_display.update(startDate, endDate, freqs, globals.agent_pc_ip)
+        return history_display.update(startDate, endDate, freqs, globals_variable.agent_pc_ip)
     return dash.no_update, dash.no_update

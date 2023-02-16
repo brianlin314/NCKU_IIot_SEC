@@ -4,7 +4,7 @@ from dash.dependencies import Input, Output, MATCH
 from dash import callback
 import dash_html_components as html
 
-import globals
+import globals_variable
 
 field_style = {'margin-top':'7px', 'margin-left':'50px',"width": 150}
 add_btn_style = {'color':'green', 'fontSize':12,'margin-top':'4.98px', 'margin-bottom':'3px', 'align':'center', "width": 50}
@@ -14,9 +14,9 @@ def serve_btns():
     add_collapse_fields = []
     del_collapse_fields = []
 
-    for i in range(globals.fields_num):
+    for i in range(globals_variable.fields_num):
         # 新增 add collapsed fields, btns
-        field = globals.all_fields[i]
+        field = globals_variable.all_fields[i]
 
         add_collapse_text = dbc.Collapse(
             html.P(field, style=field_style),
@@ -76,17 +76,17 @@ def serve_btns():
 def update(add_clicks, del_clicks, id):
     # 監聽 add_btn 是否被按, 若有則新增該 field
     field_idx = int(id['index'])
-    if add_clicks == globals.add_next_click[field_idx]:
-        globals.add_next_click[field_idx] += 1
-        field_name = globals.all_fields[field_idx]
-        globals.selected_fields.append(field_name)
+    if add_clicks == globals_variable.add_next_click[field_idx]:
+        globals_variable.add_next_click[field_idx] += 1
+        field_name = globals_variable.all_fields[field_idx]
+        globals_variable.selected_fields.append(field_name)
         # print(selected_fields)
         return [False, False, True, True]
 
     # add_btn 沒被按 => 則為 del_btn 被按, 或者add_btn, del_btn都沒被按(網頁初始狀態)
     else:
         try:
-            globals.selected_fields.remove(globals.all_fields[field_idx])
+            globals_variable.selected_fields.remove(globals_variable.all_fields[field_idx])
             # print(selected_fields)
         except:
             pass

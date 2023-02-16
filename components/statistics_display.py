@@ -3,11 +3,10 @@ import dash_bootstrap_components as dbc
 from dash import dcc
 import dash_html_components as html
 import datetime
-from database import get_ndb
 from components import nids_logtojson
 import pandas as pd
 import plotly.graph_objects as go
-import globals
+import globals_variable
 
 # set donut chart top num
 class_topNum = 3
@@ -49,11 +48,11 @@ def update(startDate, endDate, freqs, ip):
     endtime = datetime.datetime.strptime(endDate, dateFormat).strftime("%H:%M:%S")
     startDate = datetime.datetime.strptime(startDate, dateFormat).strftime("%Y-%m-%d")
     endDate = datetime.datetime.strptime(endDate, dateFormat) .strftime("%Y-%m-%d")
-    nids_logtojson.log2json(globals.nidsdirpath+"/fast.log")
+    nids_logtojson.log2json(globals_variable.nidsdirpath+"/fast.log")
 
     #讀取json檔, 篩選今天的log內容
     global df
-    df = pd.read_json(globals.nidsdirpath+"/fast.json")
+    df = pd.read_json(globals_variable.nidsdirpath+"/fast.json")
     # 若有資料
     df.insert(0, '#', [i for i in range(1, len(df)+1)])
     df['Date'] = pd.to_datetime(df['Date'])

@@ -6,7 +6,7 @@ from dash_extensions import Lottie
 import feffery_antd_components as fac
 from process_time import process_time
 from components import datePicker, se_display, alert
-import globals
+import globals_variable
 import dash_html_components as html
 
 options = dict(loop=True, autoplay=True, rendererSettings=dict(preserveAspectRatio='xMidYMid slice'))
@@ -166,7 +166,7 @@ def update(n_clicks, value, time):
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
     if(value=='Raspberry Pi'):
-        return se_display.update(startDate, endDate, freqs, globals.agent_pi_id)
+        return se_display.update(startDate, endDate, freqs, globals_variable.agent_pi_id)
     elif(value=='PC'):
-        return se_display.update(startDate, endDate, freqs, globals.agent_pc_id)
+        return se_display.update(startDate, endDate, freqs, globals_variable.agent_pc_id)
     return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update

@@ -3,7 +3,7 @@ from dash.dependencies import Input, Output
 from dash import dcc, callback, dash_table
 import dash_html_components as html
 import pandas as pd
-import globals
+import globals_variable
 from components.se_display import CONFIG
 from components import nids_logtojson
 from datetime import date
@@ -22,11 +22,11 @@ def update(startDate, endDate, freqs, ip):
     startDate = datetime.datetime.strptime(startDate, dateFormat).strftime("%m/%d/%Y")
     endDate = datetime.datetime.strptime(endDate, dateFormat) .strftime("%m/%d/%Y")
 
-    nids_logtojson.log2json(globals.nidsdirpath+"/fast.log")
+    nids_logtojson.log2json(globals_variable.nidsdirpath+"/fast.log")
 
     #讀取json檔, 篩選今天的log內容
     global df
-    df = pd.read_json(globals.nidsdirpath+"/fast.json")
+    df = pd.read_json(globals_variable.nidsdirpath+"/fast.json")
     mask = df['Destination'] == ip
     df1 = df.loc[mask]
     mask1 = df['Source'] == ip

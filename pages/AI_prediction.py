@@ -6,7 +6,7 @@ import pandas as pd
 from datetime import date
 import dash_html_components as html
 
-import globals
+import globals_variable
 from components import ai_display
 
 # components
@@ -62,7 +62,7 @@ def serve_layout():
                 fac.AntdSelect(
                     id = 'aagentselect',
                     placeholder='Agent:',
-                    options = globals.agent_options,
+                    options = globals_variable.agent_options,
                     style=dropdown_style
                 ),
             ),
@@ -84,7 +84,7 @@ def serve_layout():
 
 def update(value):
     if(value=='Raspberry Pi'):
-        ip = globals.agent_pi_ip1
+        ip = globals_variable.agent_pi_ip1
     elif(value=='PC'):
-        ip = globals.agent_pc_ip1
+        ip = globals_variable.agent_pc_ip1
     return ai_display.update(ip)

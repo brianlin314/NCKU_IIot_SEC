@@ -7,7 +7,7 @@ import pandas as pd
 from datetime import date
 import dash_html_components as html
 
-import globals
+import globals_variable
 from components import nids_logtojson, nidslog_display
 # components
 hitNum = html.H1(
@@ -61,7 +61,7 @@ def serve_layout():
                 fac.AntdSelect(
                     id = 'agentselect',
                     placeholder='Agent:',
-                    options = globals.agent_options,
+                    options = globals_variable.agent_options,
                     style=dropdown_style
                 ),
             ),
@@ -83,7 +83,7 @@ def serve_layout():
 
 def update(value):
     if(value=='Raspberry Pi'):
-        return nidslog_display.update(globals.agent_pi_ip)
+        return nidslog_display.update(globals_variable.agent_pi_ip)
     elif(value=='PC'):
-        return nidslog_display.update(globals.agent_pc_ip)
+        return nidslog_display.update(globals_variable.agent_pc_ip)
     return dash.no_update

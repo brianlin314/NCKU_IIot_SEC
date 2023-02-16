@@ -7,7 +7,7 @@ from datetime import date
 import dash_html_components as html
 import os
 
-import globals
+import globals_variable
 from components import hids_logtojson
 
 table_style = {
@@ -22,16 +22,16 @@ table_style = {
 
 def update(id):
     cmd = 'sudo chmod  777 -R /var/ossec/logs/alerts/' # 更改wazuh 底下資料夾權限
-    password = globals.sudoPassword
+    password = globals_variable.sudoPassword
     os.system('echo %s | sudo -S %s' % (password, cmd))
     today = date.today()
     todate = today.strftime("%Y/%m/%d")
     #在server上需要取消註解這行 ：
     # 使用strftime將日期格式轉成我們想要的格式
-    hids_logtojson.log2json(globals.hidsdirpath+str(today.year)+'/'+today.strftime("%b")+'/ossec-alerts-'+str(today.day).zfill(2)+'.json')
+    hids_logtojson.log2json(globals_variable.hidsdirpath+str(today.year)+'/'+today.strftime("%b")+'/ossec-alerts-'+str(today.day).zfill(2)+'.json')
     #讀取json檔, 篩選今天的log內容
     global df, df_
-    df = pd.read_json(open(globals.hidsdirpath+str(today.year)+'/'+today.strftime("%b")+'/ossec-alerts-'+str(today.day).zfill(2)+'_1.json', "r", encoding="utf8"))
+    df = pd.read_json(open(globals_variable.hidsdirpath+str(today.year)+'/'+today.strftime("%b")+'/ossec-alerts-'+str(today.day).zfill(2)+'_1.json', "r", encoding="utf8"))
     if len(df) == 0:
         return html.H3("該時段無資料可顯示，請檢查ip位址是否設定正確!")
     #在server上需要改 ： open(globals.hidsdirpath+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json'

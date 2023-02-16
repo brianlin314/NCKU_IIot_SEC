@@ -7,7 +7,7 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 import pickle
 import numpy as np
-import globals
+import globals_variable
 import tensorflow as tf
 
 def new_report(test_report):
@@ -17,15 +17,15 @@ def new_report(test_report):
     return file_new
 
 def airesult(ip):
-    pcappath = new_report(globals.pcapdirpath)
+    pcappath = new_report(globals_variable.pcapdirpath)
     file = os.path.split(pcappath)[-1]
-    cmd = f"cicflowmeter -f {pcappath} -c {globals.csvdirpath}{file}.csv" # 將pcap通過cic-flowmeter轉成csv
+    cmd = f"cicflowmeter -f {pcappath} -c {globals_variable.csvdirpath}{file}.csv" # 將pcap通過cic-flowmeter轉成csv
     os.system(cmd) # 將指令給os執行
     with tf.device('/cpu:0'): # cpu運行
         model = xgb.Booster()
-        model.load_model(globals.model_path) # 載入model
+        model.load_model(globals_variable.model_path) # 載入model
 
-    csvpath = new_report(globals.csvdirpath)
+    csvpath = new_report(globals_variable.csvdirpath)
     file = pd.read_csv(csvpath)
     mask1 = (file["src_ip"] == ip)
     mask2 = (file["dst_ip"] == ip)

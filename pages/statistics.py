@@ -7,7 +7,7 @@ import dash_html_components as html
 
 from process_time import process_time
 from components import datePicker, statistics_display
-import globals
+import globals_variable
 
 img_path = '../assets/img'
 dropdown_style = {
@@ -54,7 +54,7 @@ def serve_layout():
                             fac.AntdSelect(
                                     id = 'stagentselect',
                                     placeholder='Agent:',
-                                    options = globals.agent_options,
+                                    options = globals_variable.agent_options,
                                     style=dropdown_style
                             ),
                         ],
@@ -130,7 +130,7 @@ def update(n_clicks, value, time):
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
     if(value=='Raspberry Pi'):
-        return statistics_display.update(startDate, endDate, freqs, globals.agent_pi_ip)
+        return statistics_display.update(startDate, endDate, freqs, globals_variable.agent_pi_ip)
     elif(value=='PC'):
-        return statistics_display.update(startDate, endDate, freqs, globals.agent_pc_ip)
+        return statistics_display.update(startDate, endDate, freqs, globals_variable.agent_pc_ip)
     return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update

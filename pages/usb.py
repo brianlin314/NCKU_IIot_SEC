@@ -8,7 +8,7 @@ from datetime import date
 import dash_html_components as html
 
 import pandas as pd
-import globals
+import globals_variable
 from components import usblog_display
 
 # components
@@ -71,7 +71,7 @@ def serve_layout():
                     fac.AntdSelect( # 下拉式選取監控端點
                         id = 'uagentselect',
                         placeholder = 'Agent:',
-                        options = globals.agent_options,
+                        options = globals_variable.agent_options,
                         style = dropdown_style
                     ),
                 ),
@@ -149,7 +149,7 @@ def serve_layout():
 
 def update(value):
     if(value=='Raspberry Pi'):
-        return usblog_display.update(globals.agent_pi_id)
+        return usblog_display.update(globals_variable.agent_pi_id)
     elif(value=='PC'):
-        return usblog_display.update(globals.agent_pc_id)
+        return usblog_display.update(globals_variable.agent_pc_id)
     return dash.no_update, dash.no_update, dash.no_update, dash.no_update

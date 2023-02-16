@@ -3,7 +3,7 @@ from dash.dependencies import Input, Output
 from dash import dcc, callback, dash_table
 import dash_html_components as html
 
-import globals
+import globals_variable
 from plot import bar
 from components.se_display import CONFIG
 
@@ -15,16 +15,16 @@ def update(startDate, endDate, freqs, id):
     global CONFIG
 
     # 若所選 fields 中沒有 timestamp, 則自動加入 timestamp 在最前面
-    if len(globals.selected_fields) != 0 and 'timestamp' not in globals.selected_fields:
-        globals.selected_fields.insert(0, 'timestamp')
+    if len(globals_variable.selected_fields) != 0 and 'timestamp' not in globals_variable.selected_fields:
+        globals_variable.selected_fields.insert(0, 'timestamp')
 
     # 若 fields 中只剩下 timestamp=> 刪除 timestamp, 讓 fields 為空 (data table 會顯示所有 fields)
-    elif globals.selected_fields == ['timestamp']:
-        globals.selected_fields.remove('timestamp')
+    elif globals_variable.selected_fields == ['timestamp']:
+        globals_variable.selected_fields.remove('timestamp')
 
     # 根據 selected_fields 篩選資料(若 fields 為空, table 顯示所有 fields)
     global df
-    bar_fig, df = bar.update(startDate, endDate, freqs, globals.selected_fields, id)
+    bar_fig, df = bar.update(startDate, endDate, freqs, globals_variable.selected_fields, id)
 
     # 若無資料
     if len(df) == 0:

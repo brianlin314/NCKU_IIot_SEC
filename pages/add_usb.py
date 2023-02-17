@@ -3,6 +3,7 @@ from dash import callback
 import feffery_antd_components as fac  
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
+import globals_variable
 
 import ast
 from usb_data import cdbtxt2json
@@ -147,12 +148,7 @@ def serve_layout():
                                 id='usb-select',
                                 placeholder='請選擇Agent',
                                 size='large',
-                                options=[
-                                    {'label':'PC','value':'004'},
-                                    {'label':'Raspberry pi','value':'003'},
-                                    {'label':'Laptop','value':'009','disabled': True},
-                                    {'label':'CNC','value':'008','disabled': True}
-                                ],
+                                options = globals_variable.usb_add_options,
                                 style={
                                 'width': '200px' #固定寬度
                                 }

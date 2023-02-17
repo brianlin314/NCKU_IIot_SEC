@@ -3,15 +3,15 @@ from database import get_db
 from datetime import date
 
 def initialize():
-    global posts, model_path, num, sudoPassword, first, agent_pi_ip1, agent_pc_ip1, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, agent_pi_ip , agent_pc_ip, hidsdirpath, nidsdirpath, agent_pi_id , agent_pc_id, pcapdirpath, csvdirpath, modelpath, agent_options
+    global posts, model_path, num, usb_add_options, sudoPassword, first, agent_pi_ip1, agent_pc_ip1, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, agent_pi_ip , agent_pc_ip, hidsdirpath, nidsdirpath, agent_pi_id , agent_pc_id, pcapdirpath, csvdirpath, modelpath, agent_options
     # 需要 sudo 密碼以存取檔案
     agent_pc_id = "000" # usb 的 agent id設定(pc) 
-    agent_pi_id = "003" # usb 的 agent id設定(raspberry pi)
-    agent_pc_ip = '192.168.0.150:0' # HIDS NIDS ip 設定(pc)
+    agent_pi_id = "001" # usb 的 agent id設定(raspberry pi)
+    agent_pc_ip = '192.168.0.150:80' # HIDS NIDS ip 設定(pc)
     agent_pi_ip = "192.168.3.66:80" # HIDS,NIDS ip 設定(raspberry pi)
     agent_pc_ip1 = '192.168.3.7'  # AI prediction 的ip設定(pc)
     agent_pi_ip1 = "192.168.3.66" # AI prediction 的ip設定(raspberry pi)
-    sudoPassword = '0314' # 虛擬機密碼
+    sudoPassword = '0314nnnn' # 虛擬機密碼
     dir_path = '/var/ossec/logs/alerts'
     hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
     nidsdirpath = '/var/log/suricata/'  # nids存放路徑 不包含檔名
@@ -27,6 +27,10 @@ def initialize():
         {'label': 'Raspberry Pi', 'value': 'Raspberry Pi'},
         {'label': 'PC', 'value': 'PC'},
     ] 
+    usb_add_options = [
+    	{'label':'PC','value':'000'},
+	    {'label':'Raspberry pi','value':'001'},
+    ]
 
 def get_fields(posts):
     data = posts.find({}, {'_id':0})

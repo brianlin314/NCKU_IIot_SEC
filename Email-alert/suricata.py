@@ -7,14 +7,15 @@ from pathlib import Path
 import datetime
 import smtplib
 
+# 08/21/2022-13:51:34.630152  [**] [1:1000001:1] Possible DDoS attack [**] [Classification: (null)] [Priority: 3] {TCP} 11.196.20.74:8368 -> 192.168.65.10:80
 def description(rule_num):
-    line_list = rule_num.split(' [**] ')
-    Timestamp = line_list[0].strip().split('-')
-    Date = Timestamp[0]
-    Time = Timestamp[1].split('.')[0]
-    sid = line_list[1].split(' ')
+    line_list = rule_num.split(' [**] ')        # split to 3 parts
+    Timestamp = line_list[0].strip().split('-')     # 08/21/2022-13:51:34.630152
+    Date = Timestamp[0]     # Date : 08/21/2022 
+    Time = Timestamp[1].split('.')[0]       # Time : 13:51:34
+    sid = line_list[1].split(' ')       # sid : [1:1000001:1]
     line_list[1] = line_list[1].replace(sid[0], '')
-    rule_discribe=line_list[1].strip()
+    rule_discribe = line_list[1].strip()
     return Date,Time,rule_discribe
 def latest_rule_detail(rule_num_latest):
     rule_info={}
@@ -57,8 +58,8 @@ if __name__ == '__main__':
         #sleep(100)
         with open("/var/log/suricata/fast.log","r") as logfiles:
             email_bool=0 #判斷是否要寄信
-            lines=logfiles.readlines()
-            rule_num_latest=lines[-1]
+            lines=logfiles.readlines() #
+            rule_num_latest=lines[-1] #
             latest_rule_info=latest_rule_detail(rule_num_latest) # 抓出最新一筆的log的詳細資料
             if latest_rule_info["Rule Discription"] == 'SURICATA Applayer Detect protocol only one direction': #每次寄完信，都會噴出這條規則，拿這條規則當作已經寄過信的證明
                 continue

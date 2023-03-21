@@ -1,4 +1,5 @@
-# dashboard
+# NCKU_IIot_SEC Dashboard
+## 詳細安裝說明請參考 https://hackmd.io/@Brianlin314/Skjj7Cfnq
 ## 路徑、密碼更改
 請先到 globals_variable.py 中更改 sudoPassword, dir_path, ip ...
 

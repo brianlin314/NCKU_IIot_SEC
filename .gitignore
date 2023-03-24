@@ -1,0 +1,9 @@
+# 忽略所有 __pycache__ 資料夾
+__pycache__/
+components/__pycache__/
+database/__pycache__/
+pages/__pycache__/
+plot/__pycache__/
+process_time/__pycache__/
+usb_data/__pycache__/
+wirepcap/__pycache__/

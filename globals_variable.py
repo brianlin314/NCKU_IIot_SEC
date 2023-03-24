@@ -39,7 +39,7 @@ def initialize():
         {'label':'PC_2','value':'002'},
         {'label':'PC_3','value':'003'},
     ]
-    agent_ip = {'Server' : '210.61.41.228', 'PCs' : '210.61.41.223'}
+    agent_ip = {'Server' : '', 'PCs' : ''}
 
     agent_id = {'Server' : '000', 'PC_1' : '001', 'PC_2' : '002', 'PC_3' : '003'}
 

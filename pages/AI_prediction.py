@@ -62,7 +62,7 @@ def serve_layout():
                 fac.AntdSelect(
                     id = 'aagentselect',
                     placeholder='Agent:',
-                    options = globals_variable.agent_options,
+                    options = globals_variable.nids_agent_options,
                     style=dropdown_style
                 ),
             ),
@@ -83,8 +83,5 @@ def serve_layout():
 )
 
 def update(value):
-    if(value=='Raspberry Pi'):
-        ip = globals_variable.agent_pi_ip1
-    elif(value=='PC'):
-        ip = globals_variable.agent_pc_ip1
+    ip = globals_variable.agent_ip[value]
     return ai_display.update(ip)

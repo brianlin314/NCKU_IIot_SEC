@@ -59,7 +59,7 @@ def serve_layout(first):
                             fac.AntdSelect( # 下拉式選取監控端點
                                 id = 'dagentselect',
                                 placeholder = 'Agent:',
-                                options = globals_variable.agent_options,
+                                options = globals_variable.hids_agent_options,
                                 style=dropdown_style
                             ),
                             
@@ -100,8 +100,7 @@ def serve_layout(first):
 def update(n_clicks, add_btn, del_btns, value, time): # dagentselect, 參數必須照input順序填入
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
-    if(value == 'Raspberry Pi'):
-        return discover_display.update(startDate, endDate, freqs, globals_variable.agent_pi_id)
-    elif(value == 'PC'):
-        return discover_display.update(startDate, endDate, freqs, globals_variable.agent_pc_id)
-    return dash.no_update, dash.no_update, dash.no_update # 若還沒選擇監控端點，是不會顯示任何值
+    try:
+        return discover_display.update(startDate, endDate, freqs, globals_variable.agent_id[value])
+    except:
+        return dash.no_update, dash.no_update, dash.no_update # 若還沒選擇監控端點，是不會顯示任何值

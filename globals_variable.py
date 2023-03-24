@@ -3,15 +3,15 @@ from database import get_db
 from datetime import date
 
 def initialize():
-    global posts, model_path, num, usb_add_options, sudoPassword, first, agent_pi_ip1, agent_pc_ip1, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, agent_pi_ip , agent_pc_ip, hidsdirpath, nidsdirpath, agent_pi_id , agent_pc_id, pcapdirpath, csvdirpath, modelpath, agent_options
+    global posts, model_path, num, usb_add_options, sudoPassword, first, agent_ip, agent_id, nids_agent_options, hids_agent_options, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, hidsdirpath, nidsdirpath, pcapdirpath, csvdirpath
     # 需要 sudo 密碼以存取檔案
-    agent_pc_id = "000" # usb 的 agent id設定(pc) 
-    agent_pi_id = "001" # usb 的 agent id設定(raspberry pi)
-    agent_pc_ip = '192.168.0.150:80' # HIDS NIDS ip 設定(pc)
-    agent_pi_ip = "192.168.3.66:80" # HIDS,NIDS ip 設定(raspberry pi)
-    agent_pc_ip1 = '192.168.3.7'  # AI prediction 的ip設定(pc)
-    agent_pi_ip1 = "192.168.3.66" # AI prediction 的ip設定(raspberry pi)
-    sudoPassword = '0314nnnn' # 虛擬機密碼
+    # agent_pc_id = "000" # usb 的 agent id設定(pc) 
+    # agent_pi_id = "001" # usb 的 agent id設定(raspberry pi)
+    # agent_pc_ip = '192.168.0.150:80' # HIDS NIDS ip 設定(pc)
+    # agent_pi_ip = "192.168.3.66:80" # HIDS,NIDS ip 設定(raspberry pi)
+    # agent_pc_ip1 = '192.168.3.7'  # AI prediction 的ip設定(pc)
+    # agent_pi_ip1 = "192.168.3.66" # AI prediction 的ip設定(raspberry pi)
+    sudoPassword = 'uscc65607' # 虛擬機密碼
     dir_path = '/var/ossec/logs/alerts'
     hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
     nidsdirpath = '/var/log/suricata/'  # nids存放路徑 不包含檔名
@@ -20,17 +20,28 @@ def initialize():
     model_path = 'cic_xgboost.bin'
     selected_fields = []
     n_selected_fields = []
-    client, posts, num, current_db, = get_db.get_current_db(dir_path, sudoPassword)
+    _, posts, num, current_db, = get_db.get_current_db(dir_path, sudoPassword)
     all_fields, fields_num = get_fields(posts)
     add_next_click = [1 for i in range(fields_num)]
-    agent_options = [               # pages 底下的 agent 下拉式選單選項               
-        {'label': 'Raspberry Pi', 'value': 'Raspberry Pi'},
-        {'label': 'PC', 'value': 'PC'},
+    nids_agent_options = [               # pages 底下的 agent 下拉式選單選項               
+        {'label': 'Server', 'value': 'Server'},
+        {'label': 'PCs', 'value': 'PCs'},
+    ] 
+    hids_agent_options = [               # pages 底下的 agent 下拉式選單選項               
+        {'label': 'Server', 'value': 'Server'},
+        {'label': 'PC_1', 'value': 'PC_1'},
+        {'label': 'PC_2', 'value': 'PC_2'},
+        {'label': 'PC_3', 'value': 'PC_3'},
     ] 
     usb_add_options = [
-    	{'label':'PC','value':'000'},
-	    {'label':'Raspberry pi','value':'001'},
+    	{'label':'Server','value':'000'},
+	    {'label':'PC_1','value':'001'},
+        {'label':'PC_2','value':'002'},
+        {'label':'PC_3','value':'003'},
     ]
+    agent_ip = {'Server' : '210.61.41.228', 'PCs' : '210.61.41.223'}
+
+    agent_id = {'Server' : '000', 'PC_1' : '001', 'PC_2' : '002', 'PC_3' : '003'}
 
 def get_fields(posts):
     data = posts.find({}, {'_id':0})

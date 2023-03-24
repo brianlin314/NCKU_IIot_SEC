@@ -71,7 +71,7 @@ def serve_layout():
                     fac.AntdSelect( # 下拉式選取監控端點
                         id = 'uagentselect',
                         placeholder = 'Agent:',
-                        options = globals_variable.agent_options,
+                        options = globals_variable.hids_agent_options,
                         style = dropdown_style
                     ),
                 ),
@@ -148,8 +148,7 @@ def serve_layout():
 )
 
 def update(value):
-    if(value=='Raspberry Pi'):
-        return usblog_display.update(globals_variable.agent_pi_id)
-    elif(value=='PC'):
-        return usblog_display.update(globals_variable.agent_pc_id)
-    return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+    try:
+        return usblog_display.update(globals_variable.agent_id[value])
+    except:
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update

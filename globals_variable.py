@@ -11,7 +11,7 @@ def initialize():
     # agent_pi_ip = "192.168.3.66:80" # HIDS,NIDS ip 設定(raspberry pi)
     # agent_pc_ip1 = '192.168.3.7'  # AI prediction 的ip設定(pc)
     # agent_pi_ip1 = "192.168.3.66" # AI prediction 的ip設定(raspberry pi)
-    sudoPassword = 'uscc65607' # 虛擬機密碼
+    sudoPassword = '' # 虛擬機密碼
     dir_path = '/var/ossec/logs/alerts'
     hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
     nidsdirpath = '/var/log/suricata/'  # nids存放路徑 不包含檔名

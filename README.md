@@ -1,4 +1,5 @@
-# dashboard
+# NCKU_IIot_SEC Dashboard
+## 詳細安裝說明請參閱 https://hackmd.io/@Brianlin314/Skjj7Cfnq
 ## 路徑、密碼更改
 請先到 globals_variable.py 中更改 sudoPassword, dir_path, ip ...
 
@@ -24,10 +25,11 @@ conda create -y -n dashboard python=3.7
 pip install -r requirements.txt
 ```
 
-## 開啟dashboard流程
+## 開啟dashboard及emai_alert流程
 ```
 conda activate dashboard 
 cd NCKU_IIot_SEC
+python NIDS_alert.py &  // 將python程式在後台執行，當關閉終端機，該程式也會被shut down
 python app.py  // ctrl+左鍵 點選http://127.0.0.1:8050/ 開啟
 ```
 

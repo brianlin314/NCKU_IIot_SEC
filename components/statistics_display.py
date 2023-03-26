@@ -53,6 +53,11 @@ def update(startDate, endDate, freqs, ip):
     #讀取json檔, 篩選今天的log內容
     global df
     df = pd.read_json(globals_variable.nidsdirpath+"/fast.json")
+    mask = df['Destination'].str.contains(ip)
+    df1 = df.loc[mask]
+    mask1 = df['Source'].str.contains(ip)
+    df2 = df.loc[mask1]
+    df = pd.concat([df1,df2])
     # 若有資料
     df.insert(0, '#', [i for i in range(1, len(df)+1)])
     df['Date'] = pd.to_datetime(df['Date'])

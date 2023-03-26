@@ -41,7 +41,16 @@ def update(id):
     df_['Time'] = df['timestamp'].apply(lambda x: x.strftime("%H:%M:%S"))
     df_['Agent_ID'] = df['agent'].apply(lambda x: x['id'])
     df_['Agent'] = df['agent'].apply(lambda x: x['name'])
-    df_['Event'] = df['rule'].apply(lambda x: x['description'])
+    #################################################
+    ##            請庭瑜把這邊改回來                ##
+    #################################################
+    try:
+        df_['Event'] = df['rule'].iloc['description']
+    except:
+        df_['Event'] = 'None'
+    #################################################
+    ##            請庭瑜把這邊改回來                ##
+    #################################################
     df_['Level'] = df['rule'].apply(lambda x: x['level'])
     df_= df_.sort_values(by='Time',ascending=False)
     del df

@@ -59,7 +59,7 @@ def serve_layout():
                 fac.AntdSelect(
                     id = 'hagentselect',
                     placeholder='Agent:',
-                    options = globals_variable.agent_options,
+                    options = globals_variable.hids_agent_options,
                     style=dropdown_style
                 ),
             ),
@@ -80,8 +80,5 @@ def serve_layout():
 )
 
 def update(value):
-    if(value=='Raspberry Pi'):
-        id = globals_variable.agent_pi_id
-    elif(value=='PC'):
-        id = globals_variable.agent_pc_id
+    id = globals_variable.agent_id[value]
     return hidslog_display.update(id)

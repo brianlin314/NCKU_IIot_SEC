@@ -66,7 +66,7 @@ def serve_layout():
                             fac.AntdSelect(
                                 id = 'hisagentselect',
                                 placeholder='Agent:',
-                                options = globals_variable.agent_options,
+                                options = globals_variable.nids_agent_options,
                                 style=dropdown_style
                             ),
                             dcc.Loading(
@@ -101,8 +101,7 @@ def serve_layout():
 def update(n_clicks, value, time): 
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
-    if(value=='Raspberry Pi'):
-        return history_display.update(startDate, endDate, freqs, globals_variable.agent_pi_ip)
-    elif(value=='PC'):
-        return history_display.update(startDate, endDate, freqs, globals_variable.agent_pc_ip)
-    return dash.no_update, dash.no_update
+    try:
+        return history_display.update(startDate, endDate, freqs, globals_variable.agent_ip[value])
+    except:
+        return dash.no_update, dash.no_update

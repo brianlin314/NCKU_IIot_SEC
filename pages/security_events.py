@@ -56,10 +56,7 @@ def serve_layout(first):
                             fac.AntdSelect(
                                     id = 'seagentselect',
                                     placeholder='Agent:',
-                                    options=[
-                                        {'label': 'Raspberry Pi', 'value': 'Raspberry Pi'},
-                                        {'label': 'PC', 'value': 'PC'},
-                                    ],
+                                    options=globals_variable.hids_agent_options,
                                     style=dropdown_style
                             ),
                         ],
@@ -165,8 +162,7 @@ def serve_layout(first):
 def update(n_clicks, value, time):
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
-    if(value=='Raspberry Pi'):
-        return se_display.update(startDate, endDate, freqs, globals_variable.agent_pi_id)
-    elif(value=='PC'):
-        return se_display.update(startDate, endDate, freqs, globals_variable.agent_pc_id)
-    return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
+    try:
+        return se_display.update(startDate, endDate, freqs, globals_variable.agent_id[value])
+    except:
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update

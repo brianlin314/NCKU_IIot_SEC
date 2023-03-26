@@ -32,9 +32,9 @@ def update(ip):
     #讀取json檔, 篩選今天的log內容
     global df
     df = pd.read_json(globals_variable.nidsdirpath+"/fast.json")
-    mask = df['Destination'] == ip
+    mask = df['Destination'].str.contains(ip)
     df1 = df.loc[mask]
-    mask1 = df['Source'] == ip
+    mask1 = df['Source'].str.contains(ip)
     df2 = df.loc[mask1]
     df = pd.concat([df1,df2])
     mask1 =df['Date'] == today

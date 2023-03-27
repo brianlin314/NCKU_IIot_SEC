@@ -55,7 +55,7 @@ if __name__ == "__main__":
                                     try:
                                         smtp.ehlo()  # 驗證SMTP伺服器
                                         smtp.starttls()  # 建立加密傳輸
-                                        smtp.login("P76111262@gs.ncku.edu.tw", "bwxenvkojrijkltq")  # 登入寄件者gmail
+                                        smtp.login("P76111262@gs.ncku.edu.tw", "")  # 登入寄件者gmail
                                         smtp.send_message(content)  # 寄送郵件
                                         print("郵件傳送成功!", "傳送資訊為:", usb_detail)
                                     except Exception as e:

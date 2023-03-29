@@ -5,4 +5,11 @@ database/__pycache__/
 pages/__pycache__/
 plot/__pycache__/
 process_time/__pycache__/
+<<<<<<< HEAD
 usb_data/__pycache__/
+=======
+usb_data/__pycache__/
+wirepcap/__pycache__/
+
+*.sql
+>>>>>>> 1ee613ca1dd59f1c0a35c0e0b075e45f2e019c37

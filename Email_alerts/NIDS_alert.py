@@ -31,18 +31,17 @@ def latest_rule_describe(latest_rule):
 
 if __name__ == '__main__':
     content = MIMEMultipart()  #建立MIMEMultipart物件
-    content["from"] = "P76111262@gs.ncku.edu.tw"  #寄件者
-    content["to"] = ",brian0314b@gmail.com,,P76115038@gs.ncku.edu.tw,x0917364931@gmail.com,fico880227@gmail.com,P78111014,P78111014@gs.ncku.edu.tw," #收件者
+    content["from"] = "@gs.ncku.edu.tw"  #寄件者
+    content["to"] = ",@gmail.com,,@gs.ncku.edu.tw,,@gmail.com,,@gmail.com,,@gs.ncku.edu.tw," #收件者
     content["subject"] = "NCKU_IIoT_SEC-NIDS 已偵測到裝置受到網路危害" #郵件標題
     count = 0
-    while(True):
+    while True:
         with open("/var/log/suricata/fast.log","r") as logfiles:
             lines = logfiles.readlines()
             rule_latest = lines[-1]
             latest_rule_info = latest_rule_describe(rule_latest) # 抓出最新一筆的log的詳細資料
             check_Time = '' 
             check_rule = ''
-            # print(latest_rule_info)
             if latest_rule_info["Priority"] == "1" and check_Time != latest_rule_info['Time'] and check_rule != latest_rule_info['Rule Discription']:
                 check_Time = latest_rule_info['Time']
                 check_rule = latest_rule_info['Rule Discription']
@@ -60,7 +59,7 @@ if __name__ == '__main__':
                     try:
                         smtp.ehlo()  # 驗證SMTP伺服器
                         smtp.starttls()  # 建立加密傳輸
-                        smtp.login("P76111262@gs.ncku.edu.tw", "hzooyjrqcnpgomjp")  # 登入寄件者gmail
+                        smtp.login("@gs.ncku.edu.tw", "")  # 登入寄件者gmail
                         smtp.send_message(content)  # 寄送郵件
                         print("郵件傳送成功!")
                     except Exception as e:

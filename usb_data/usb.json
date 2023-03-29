@@ -1,0 +1,4 @@
+{"In_Date": "2023-03-26", "In_Time": "13:20:45", "Out_Date": "2023-03-26", "Out_Time": "13:26:34", "agent_id": "000", "agent_name": "server-VirtualBox", "authorized": "black", "SerialNum": "C08A32D5084ACD10B3F7E043", "connected": 0, "UsbPort": "1-2"}
+{"In_Date": "2023-03-26", "In_Time": "18:10:50", "Out_Date": "2023-03-26", "Out_Time": "18:12:54", "agent_id": "000", "agent_name": "server-VirtualBox", "authorized": "black", "SerialNum": "26B0401590010045", "connected": 0, "UsbPort": "2-1"}
+{"In_Date": "2023-03-26", "In_Time": "18:13:08", "Out_Date": "2023-03-26", "Out_Time": "18:15:50", "agent_id": "000", "agent_name": "server-VirtualBox", "authorized": "black", "SerialNum": "26B0401590010045", "connected": 0, "UsbPort": "2-1"}
+{"In_Date": "2023-03-26", "In_Time": "19:26:28", "Out_Date": "-", "Out_Time": "-", "agent_id": "000", "agent_name": "server-VirtualBox", "authorized": "black", "SerialNum": "26B0401590010045", "connected": 1, "UsbPort": "2-1"}

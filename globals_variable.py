@@ -3,7 +3,7 @@ from database import get_db
 from datetime import date
 def default():
     global user_psw , posts, model_path, usb_add_options, sudoPassword, dir_path, agent_ip, agent_id, nids_agent_options, hids_agent_options, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, hidsdirpath, nidsdirpath, pcapdirpath, csvdirpath
-    sudoPassword = 'uscc65607' # 虛擬機密碼
+    sudoPassword = '' # 虛擬機密碼
     dir_path = '/var/ossec/logs/alerts'
     hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
     nidsdirpath = '/var/log/suricata/'  # nids存放路徑 不包含檔名
@@ -33,7 +33,7 @@ def default():
 def initialize():
     global posts, current_db, first, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num
     first = 1
-    sudoPassword = 'uscc65607' # 虛擬機密碼
+    sudoPassword = '' # 虛擬機密碼
     dir_path = '/var/ossec/logs/alerts'
     selected_fields = []
     n_selected_fields = []

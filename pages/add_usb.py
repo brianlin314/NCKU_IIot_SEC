@@ -35,115 +35,122 @@ def serve_layout():
             html.P("Welcome to add Authorized USB"),
             html.Div(
                 [   
-                    fac.AntdRow(
+                    ##############################
+                    ##    User ID & Passwrd     ##
+                    ##############################
+                    
+                    fac.AntdSpace(
                         [
-                            html.Div(
-                                fac.AntdText('輸入使用者帳號', code=True),
-                                style={
-                                    'width': '170px',
-                                    "font-size": '24px',
-                                    'color':'#0E79E1',
-                                }
+                            fac.AntdCol(
+                                html.Div(
+                                    html.H5('Manager ID'),
+                                    style = {
+                                            'color':'#8EA0A5',
+                                    },
+                                ),
                             ),
-                            fac.AntdInput(
-                                id='input-root', #input id
-                                size='large', #調整輸入框大小
-                                placeholder='輸入使用者名稱', #輸入框裡的文字
-                                #addonAfter='輸入USB Serial Number', #輸入框前的文字
-                                style={ #css style
-                                    'width': '300px',
-                                    'marginBottom': '5px',
-                                }
-                            )
-                        ]
+                            fac.AntdCol(
+                                html.Div(
+                                    html.H5('Manager Password'),
+                                    style = {
+                                            'color':'#8EA0A5',
+                                    },
+                                ),
+                            ),
+
+                        ],
+                        size = 200,
+                    ),
+                    fac.AntdRow(
+                        fac.AntdSpace(
+                            [
+                                
+                                fac.AntdInput(
+                                    size='middle',
+                                    id='input-root',
+                                    placeholder='',
+                                    style={
+                                        'width': '200px',
+                                        'marginBottom': '5px'
+                                    }
+                                ),
+                                fac.AntdInput(
+                                    id='input-password',
+                                    mode='password',
+                                    passwordUseMd5=True,
+                                    maxLength=100,
+                                    style={
+                                        'width': '200px'
+                                    }
+                                ),
+                            ],
+                            size = 100,
+                        ),
                     ),
 
+                    ##############################
+                    ##    USB Serial number     ##
+                    ##############################
                     html.Br(),
-                    fac.AntdRow(
-                        [   
-                            html.Div(
-                                fac.AntdText('輸入使用者密碼', code=True),
-                                style={
-                                    'width': '170px',
-                                    "font-size": '24px',
-                                    'color':'#0E79E1',
-                                }
-                            ),
-                            fac.AntdInput(
-                                id='input-password', #input id
-                                mode='password', #隱藏所打的字
-                                size='large', #調整輸入框大小
-                                placeholder='輸入使用者密碼', #輸入框裡的文字
-                                #addonAfter='輸入USB Serial Number', #輸入框前的文字
-                                style={ #css style
-                                    'width': '300px',
-                                    'marginBottom': '5px'
-                                }
-                            )
-                        ]
-                    ),
-
-                    html.Br(),
-                    fac.AntdRow(
+                    fac.AntdSpace(
                         [
-                            html.Div(
-                                fac.AntdText('輸入USB序列號', code=True),
-                                style={
-                                    'width': '170px',
-                                    "font-size": '24px',
-                                    'color':'#0E79E1',
-                                }
+                            fac.AntdCol(
+                                html.Div(
+                                    html.H5('USB Serial Number'),
+                                    style = {
+                                        'color':'#8EA0A5',
+                                    },
+                                ),
                             ),
-
+                            fac.AntdCol(
+                                html.Div(
+                                    html.H5('USB Serial Number Again'),
+                                    style = {
+                                        'color':'#8EA0A5',
+                                    },
+                                ),
+                            ),
+                        ],
+                        size = 200,
+                    ),
+                    fac.AntdSpace(
+                        [
                             fac.AntdInput(
                                 id='input-usbSN', #input id
                                 mode='password', #隱藏所打的字
                                 size='large', #調整輸入框大小
                                 placeholder='輸入USB Serial Number', #輸入框裡的文字
                                 style={ #css style
-                                    'width': '300px',
+                                    'width': '200px',
                                     'marginBottom': '5px'
                                 }
-                            )
-                        ]
-                    ),
-
-                    html.Br(),
-                    fac.AntdRow(
-                        [
-                            html.Div(
-                                fac.AntdText('重新輸入序列號', code=True),
-                                style={
-                                    'width': '170px',
-                                    "font-size": '24px',
-                                    'color':'#0E79E1',
-                                }
                             ),
-
                             fac.AntdInput(
                                 id='input-usbSN-again', #input id
                                 mode='password', #隱藏所打的字
                                 size='large', #調整輸入框大小
-                                placeholder='再次確認USB Serial Number', #輸入框裡的文字
+                                placeholder='再次輸入USB Serial Number', #輸入框裡的文字
                                 style={ #css style
-                                    'width': '300px',
+                                    'width': '200px',
                                     'marginBottom': '5px'
                                 }
-                            )
-                        ]
+                            ),
+                        ],
+                        size = 100,
                     ),
-
                     html.Br(),
                     fac.AntdRow(
                         [
                             html.Div(
-                                fac.AntdText('請選擇Agent', code=True),
-                                style={
-                                    'width': '170px',
-                                    "font-size": '24px',
-                                    'color':'#0E79E1',
-                                }
+                                html.H5('請選擇Agent'),
+                                style = {
+                                        'color':'#8EA0A5',
+                                },
                             ),
+                        ]
+                    ),
+                    fac.AntdRow(
+                        [
                             fac.AntdSelect(
                                 id='usb-select',
                                 placeholder='請選擇Agent',

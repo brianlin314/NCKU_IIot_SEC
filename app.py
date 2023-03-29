@@ -1,29 +1,68 @@
-# 引用外部套件
+##########################
+##       引用外部套件     ##
+##########################
 import warnings, os, globals_variable
 import dash
 import webbrowser
 from dash import dcc, html, callback
-from dash.dependencies import Input, Output
-from flask import send_from_directory
+from dash.dependencies import Input, Output, State
+from flask import Flask
+from flask_login import login_user, LoginManager, UserMixin, current_user
+from flask import send_from_directory, request, session, redirect
+import dash_auth
 
-# 引用內部函式 
+##########################
+##       引用內部函式     ##
+##########################
 from components import navbar, hide_sidebar
-from pages import home, discover, security_events, non_exist, hids_logs, nids_logs, AI_prediction, usb, add_agents, add_usb, history, statistics
+from pages import login, home, discover, security_events, non_exist, hids_logs, nids_logs, AI_prediction, usb, add_agents, add_usb, history, statistics
 
+
+VALID_USERNAME_PASSWORD = {"test": "test", "hello": "world"}
 warnings.filterwarnings("ignore", category=Warning) # 忽略匹配的警告
-app = dash.Dash(__name__, suppress_callback_exceptions=True)
+server = Flask(__name__)
+app = dash.Dash(__name__, server=server, suppress_callback_exceptions=True)
+globals_variable.default() #初始化全域變數，只在重啟Dash的時候會呼叫
 
+###########################
+##      Login Set up     ##
+###########################
+server.config.update(SECRET_KEY='mijijidasdoksmer')
+# Login manager object will be used to login / logout users
+# login_manager = LoginManager()
+# login_manager.init_app(server)
+# login_manager.login_view = '/login'
+
+# User data model. It has to have at least self.id as a minimum
+
+# class User(UserMixin):
+#     def __init__(self, username):
+#         self.id = username
+
+# @ login_manager.user_loader
+# def load_user(username):
+#     ''' This function loads the user by user id. Typically this looks up the user from a user database.
+#         We won't be registering or looking up users in this example, since we'll just login using LDAP server.
+#         So we'll simply return a User object with the passed in username.
+#     '''
+#     return User(username)
+
+##########################
+##      Components      ##
+##########################
 global first 
 first = 1
 
-# components
+# login_modal = login.modal
 navbar1 = navbar.navbar
 sidebar = hide_sidebar.sidebar 
-url = dcc.Location(id="url")
+url = dcc.Location(id="url", refresh=True)
 content = html.Div(id='content')
 
+##########################
+##      Layout          ##
+##########################
 def serve_layout():
-    # 得到最新狀態的 db
     globals_variable.initialize()
     layout = html.Div(
         [
@@ -36,63 +75,65 @@ def serve_layout():
     return layout
 
 # live update, 請注意這裡是要用 serve_layout 而非 serve_layout()
-app.layout = serve_layout # 在每次頁面加載時提供動態佈局 , 你需要寫 app.layout = serve_layout 而非 app.layout = serve_layout()
-server = app.server
+app.layout = serve_layout
+
 
 # 透過 url 來決定顯示哪個 page
-@callback(
-    Output('content', 'children'), 
-    Input('url', 'pathname') # 第一個值為id，第二個值為屬性名
+@app.callback(
+    Output('content', 'children'),
+    [
+        Input('url', 'pathname'), # 第一個值為id，第二個值為屬性名
+    ]
 )
 
 def display_page(pathname): # 根據callack,返回所選頁面
     global first
 
-    # live update layout
-    if pathname in ['/', '/Home']:
-        return home.serve_layout()
+    view = None
 
-    elif pathname == '/Host_based/Discover':
-        layout = discover.serve_layout(first)
-        return layout
+    if ('user' not in session):
+        view = login.serve_layout()
+        
+    elif (pathname in ['/login']) and ('user' not in session):
+        view = login.serve_layout()
 
-    elif pathname == '/Host_based/Security_events':
-        layout = security_events.serve_layout(first)
-        return layout
+    elif (pathname in ['/', '/Home']) and ('user' in session):
+        view = home.serve_layout()
 
-    elif pathname == '/Host_based/logs':
-        layout = hids_logs.serve_layout()
-        return layout 
+    elif (pathname == '/Host_based/Discover') and ('user' in session):
+        view = discover.serve_layout(first)
 
-    elif pathname == '/Network_based/History':
-        layout = history.serve_layout()
-        return layout
+    elif (pathname == '/Host_based/Security_events') and ('user' in session):
+        view = security_events.serve_layout(first)
 
-    elif pathname == '/Network_based/Statistics':
-        layout = statistics.serve_layout()
-        return layout
+    elif (pathname == '/Host_based/logs') and  ('user' in session):
+        view = hids_logs.serve_layout()
 
-    elif pathname == '/Network_based/logs':
-        layout = nids_logs.serve_layout()
-        return layout
+    elif (pathname == '/Network_based/History') and ('user' in session):
+        view = history.serve_layout()
 
-    elif pathname == '/AI_Prediction':
-        layout = AI_prediction.serve_layout()
-        return layout
+    elif (pathname == '/Network_based/Statistics') and ('user' in session):
+        view = statistics.serve_layout()
 
-    elif pathname == '/USB':
-        layout = usb.serve_layout()
-        return layout
+    elif (pathname == '/Network_based/logs') and ('user' in session):
+        view = nids_logs.serve_layout()
+
+    elif (pathname == '/AI_Prediction') and ('user' in session):
+        view = AI_prediction.serve_layout()
+
+    elif (pathname == '/USB') and ('user' in session):
+        view = usb.serve_layout()
     
-    elif pathname == '/Setting/add_USB':
-        layout = add_usb.serve_layout()
-        return layout
+    elif (pathname == '/Setting/add_USB') and ('user' in session):
+        view = add_usb.serve_layout()
     
-    # elif pathname == '/Setting/add_agents':
-    #     layout = add_agents.serve_layout()
-    #     return layout
+    elif (pathname == '/Setting/add_agents') and ('user' in session):
+        view = add_agents.serve_layout()
 
-    return non_exist.serve_layout  # 若非以上路徑, 則 return 404 message
+    else:
+        view = non_exist.serve_layout()
+
+    return view
 
 @server.route("/total", methods=['GET'])
 def serving_lottie_total():

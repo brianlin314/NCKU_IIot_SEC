@@ -20,6 +20,12 @@ table_style = {
 }
 # global CONFIG
 
+def try_lambda(dic, key):
+    try:
+        return dic[key]
+    except:
+        pass
+
 def update(id):
     cmd = 'sudo chmod  777 -R /var/ossec/logs/alerts/' # 更改wazuh 底下資料夾權限
     password = globals_variable.sudoPassword
@@ -41,16 +47,7 @@ def update(id):
     df_['Time'] = df['timestamp'].apply(lambda x: x.strftime("%H:%M:%S"))
     df_['Agent_ID'] = df['agent'].apply(lambda x: x['id'])
     df_['Agent'] = df['agent'].apply(lambda x: x['name'])
-    #################################################
-    ##            請庭瑜把這邊改回來                ##
-    #################################################
-    try:
-        df_['Event'] = df['rule'].iloc['description']
-    except:
-        df_['Event'] = 'None'
-    #################################################
-    ##            請庭瑜把這邊改回來                ##
-    #################################################
+    df_['Event'] = df['rule'].apply(lambda x: try_lambda(x, 'description'))
     df_['Level'] = df['rule'].apply(lambda x: x['level'])
     df_= df_.sort_values(by='Time',ascending=False)
     del df

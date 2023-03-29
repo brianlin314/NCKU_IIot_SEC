@@ -145,15 +145,15 @@ sidebar = html.Div(
                                                 'icon': 'antd-setting'
                                             },
                                     'children': [
-                                        # {
-                                        #     'component': 'Item',
-                                        #     'props': {
-                                        #         'key': '/Setting/add_agents',
-                                        #         'title': 'Add/Delete Agents',
-                                        #         'icon':'antd-user-add',
-                                        #         'href':'/Setting/add_agents',
-                                        #     },
-                                        # },
+                                        {
+                                            'component': 'Item',
+                                            'props': {
+                                                'key': '/Setting/add_agents',
+                                                'title': 'Add/Delete Agents',
+                                                'icon':'antd-user-add',
+                                                'href':'/Setting/add_agents',
+                                            },
+                                        },
                                         {
                                             'component': 'Item',
                                             'props': {
@@ -164,7 +164,17 @@ sidebar = html.Div(
                                             },
                                         }
                                     ]
-                                }
+                                },
+                                {
+                                    'component': 'Item',
+                                    'props': 
+                                            {  
+                                                'key': '/Login',
+                                                'title': 'Login',
+                                                'icon': 'antd-deployment-unit',
+                                                'href': '/Login'
+                                            }
+                                },
                             ],
                             mode='inline'
                         )

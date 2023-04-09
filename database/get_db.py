@@ -21,9 +21,6 @@ def get_current_db(dir_path, sudoPassword):
     return client, posts, num, current_db
 
 def get_current_nidsdb(dir_path, sudoPassword):
-    # 當 last_date.pkl 不存在時(更新版本), 刪除 DB 
-    # if not os.path.isfile('./last_nids_num.pkl'):
-    #     del_db.delete()
 
     # 建立和mongoDB連線，取用collection中的posts
     client = MongoClient()

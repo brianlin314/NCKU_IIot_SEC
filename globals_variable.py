@@ -40,7 +40,6 @@ def initialize():
     selected_fields = []
     n_selected_fields = []
     _, posts, num, current_db, = get_db.get_current_db(dir_path, sudoPassword)
-    # nids_logtojson.log2json('/var/log/suricata/fast.log') # brian new add
     _, nidsjson, n_num, current_nids_db, = get_db.get_current_nidsdb(nidsdirpath , sudoPassword)
     all_fields, fields_num = get_fields(posts)
     add_next_click = [1 for i in range(fields_num)]

@@ -59,7 +59,7 @@ def serve_layout():
                             ),
 
                         ],
-                        size = 200,
+                        size = 195,
                     ),
                     fac.AntdRow(
                         fac.AntdSpace(
@@ -111,8 +111,9 @@ def serve_layout():
                                 ),
                             ),
                         ],
-                        size = 200,
+                        size = 130,
                     ),
+                    html.Br(),
                     fac.AntdSpace(
                         [
                             fac.AntdInput(
@@ -139,10 +140,11 @@ def serve_layout():
                         size = 100,
                     ),
                     html.Br(),
+                    html.Br(),
                     fac.AntdRow(
                         [
                             html.Div(
-                                html.H5('請選擇Agent'),
+                                html.H5('Choose Agent'),
                                 style = {
                                         'color':'#8EA0A5',
                                 },

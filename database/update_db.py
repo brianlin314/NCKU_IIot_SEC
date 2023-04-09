@@ -3,7 +3,7 @@ import pickle as pkl
 from datetime import datetime, timedelta
 from itertools import islice
 from database import create_db, get_db
-
+from components import nids_logtojson
 # generator
 def gen_dates(start, days):
     day = timedelta(days=1)
@@ -132,7 +132,7 @@ def update_nidsdb(nidsjson, dir_path, sudoPassword):
     for date in dates_lst[1:]:
         year, month, day = get_time_info(date)
         try:
-            f = open(f'{dir_path}/{year}/fast--{month}-{day}.json', 'r')
+            f = open(f'{dir_path}/{year}/fast-{month}-{day}.log', 'r')
             lines = f.readlines()
 
             # 更新 last date info

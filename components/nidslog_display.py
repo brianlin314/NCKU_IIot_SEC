@@ -6,15 +6,19 @@ from pandas import json_normalize
 from datetime import date
 import dash_html_components as html
 import os
-
+import dash
 import globals_variable
 from components import nids_logtojson
+from database import get_db
+import pprint
+import re
+
 table_style = {
     "margi n-left": "1rem",
     "margin-right": "1rem",
     "position":"relative",
     "left":"0.5rem",
-    "top":"2rem",
+    "top":"5rem",
     'fontsize':12,
 }
 
@@ -22,31 +26,32 @@ table_style = {
 # global CONFIG
 
 def update(ip):
+    nidsjson = get_db.connect_nidsdb()
+    print(nidsjson)
     today = date.today()
     today = today.strftime("%m/%d/%Y")
-    cmd = 'sudo chmod  777 -R /var/log/' # 更改資料夾權限
-    password = globals_variable.sudoPassword
-    os.system('echo %s | sudo -S %s' % (password, cmd))
-    nids_logtojson.log2json(globals_variable.nidsdirpath+"/fast.log")
 
-    #讀取json檔, 篩選今天的log內容
-    global df
-    df = pd.read_json(globals_variable.nidsdirpath+"/fast.json")
-    mask = df['Destination'].str.contains(ip)
-    df1 = df.loc[mask]
-    mask1 = df['Source'].str.contains(ip)
-    df2 = df.loc[mask1]
-    df = pd.concat([df1,df2])
-    mask1 =df['Date'] == today
-    df = df.loc[mask1]
-    df = df.loc[:, ["Date", "Time", "Signature Id", "Classification", "Priority", "Protocol", "Source", "Destination"]]
-    df['Date'] = df['Date'].apply(lambda x: x.strftime("%Y/%m/%d"))
-    df= df.sort_values(by='Time',ascending=False)
+    escaped_ip = re.escape(ip)
+    print(ip)
+    query = {
+        '$and': [
+            {'Date': {'$eq': '04/05/2023'}},
+            {'$or': [
+                {'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
+                {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}
+            ]}
+        ]
+    }
+    print(query)
+    data = list(nidsjson.find(query))
+    df = pd.DataFrame(data)
+    df = df.drop(columns = '_id')
     all_cols = list(df.columns)
     table = dash_table.DataTable(
-        virtualization=True,
-        data=df.to_dict('records'),
-        columns=[{'name': column, 'id': column} for column in all_cols],
+        virtualization = True,
+        data = df.to_dict('records'),
+        columns = [{'name': column, 'id': column} for column in all_cols],
+        page_size = 50,
         style_header={
             'backgroundColor': '#99ABBD',
             'color': 'black',
@@ -68,6 +73,6 @@ def update(ip):
         style_table={
             'minWidth': '100%',
             'Width': '100%'
-        },
+        }
     )
     return table

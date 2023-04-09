@@ -2,6 +2,8 @@ import os
 import json
 import glob
 import pickle as pkl
+from components import nids_logtojson
+from itertools import islice
 
 def record_last(last_date_info):
     file = open('last_date.pkl', 'wb')
@@ -9,20 +11,22 @@ def record_last(last_date_info):
     file.close()
 
 def change_permission(dir_path, sudoPassword):
-    paths = dir_path.split('/')
-    for i in range(2, len(paths)+1):
-        path = '/'.join(paths[:i])
+    cmd = f"sudo chmod  777 -R {dir_path}" # 更改wazuh 底下資料夾權限
+    os.system('echo %s | sudo -S %s' % (sudoPassword, cmd))
+    # paths = dir_path.split('/')
+    # for i in range(2, len(paths)+1):
+    #     path = '/'.join(paths[:i])
 
-        # 若 path permission 已經為 777, 則不用改變他的 permission
-        if oct(os.stat(path).st_mode)[-3:] == '777':
-            continue
+    #     # 若 path permission 已經為 777, 則不用改變他的 permission
+    #     if oct(os.stat(path).st_mode)[-3:] == '777':
+    #         continue
 
-        if i != len(paths):
-            changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 {path}"
-            os.system(changePermission_cmd)
-        else:
-            changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 -R {path}"
-            os.system(changePermission_cmd)
+    #     if i != len(paths):
+    #         changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 {path}"
+    #         os.system(changePermission_cmd)
+    #     else:
+    #         changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 -R {path}"
+    #         os.system(changePermission_cmd)
 
 def unzip(dir_path, sudoPassword):
     gz_files = glob.glob(f'{dir_path}/**/*.json.gz', recursive=True)
@@ -89,4 +93,61 @@ def createDB(database, dir_path, sudoPassword):
         json_lines = [json.loads(line) for line in lines]
         num += len(lines)
         database.insert_many(json_lines)
+    return num
+
+def record_nids_last(last_num_info):
+    file = open('last_nids_num.pkl', 'wb')
+    pkl.dump(last_num_info, file)
+    file.close()
+
+def createnidsDB(database, dir_path, sudoPassword):
+
+    # 更改目錄存取權限
+    change_permission(dir_path, sudoPassword)
+    
+    #Ollie:這樣每次更新的時候log一樣不會被轉成json
+    targetPattern = "20[0-9][0-9]"
+
+    years = sorted(glob.glob(f'{dir_path}/{targetPattern}'))
+
+    months = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ]
+
+    num = 0
+    data = []
+    error_file = ''
+    log_files = []
+
+    for year_ in years:
+        log_files = sorted(glob.glob(f'{year_}/*.log'))  # 找出所有日期的 .log files, 並由小到大排序
+        print("######################")
+        print(log_files)
+        for i in range(len(log_files)):
+            f = open(log_files[i], 'r')
+            lines = f.readlines()
+
+            # 紀錄每月最後有資料的日期, data數目 => 紀錄 last date info
+            if i == len(log_files)-1:
+                day = log_files[i].split('.')[-2].split('-')[-1]
+                month = log_files[i].split('.')[-2].split('-')[-2]
+                last_date_info = [f'{year_}-{month}-{day}', len(lines)]
+                record_nids_last(last_date_info)
+            try:
+                log_lines = [nids_logtojson.log2dic(line) for line in lines]
+                num += len(lines)
+            except:
+                error_file = log_files[i]
+            data += log_lines
+            print(f'{log_files[i]} 有 {len(lines)} 筆資料')
+    try:
+        database.insert_many(data) # insert data into mongoDB
+    except:
+        print(f'重新 insert {error_file}')
+        f = open(error_file, 'r')
+        lines = f.readlines()
+        log_lines = [nids_logtojson.log2dic(line) for line in lines]
+        num += len(lines)
+        database.insert_many(log_lines)
     return num

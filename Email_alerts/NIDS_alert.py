@@ -34,14 +34,13 @@ if __name__ == '__main__':
     content["from"] = "@gs.ncku.edu.tw"  #寄件者
     content["to"] = ",@gmail.com,,@gs.ncku.edu.tw,,@gmail.com,,@gmail.com,,@gs.ncku.edu.tw," #收件者
     content["subject"] = "NCKU_IIoT_SEC-NIDS 已偵測到裝置受到網路危害" #郵件標題
-    count = 0
+    check_Time = '' 
+    check_rule = ''
     while True:
         with open("/var/log/suricata/fast.log","r") as logfiles:
             lines = logfiles.readlines()
             rule_latest = lines[-1]
             latest_rule_info = latest_rule_describe(rule_latest) # 抓出最新一筆的log的詳細資料
-            check_Time = '' 
-            check_rule = ''
             if latest_rule_info["Priority"] == "1" and check_Time != latest_rule_info['Time'] and check_rule != latest_rule_info['Rule Discription']:
                 check_Time = latest_rule_info['Time']
                 check_rule = latest_rule_info['Rule Discription']

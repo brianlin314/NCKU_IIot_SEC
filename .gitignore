@@ -6,6 +6,7 @@ pages/__pycache__/
 plot/__pycache__/
 process_time/__pycache__/
 usb_data/__pycache__/
+wirepcap/pcap/
 
 *.pkl
 

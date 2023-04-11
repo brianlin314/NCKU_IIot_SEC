@@ -48,7 +48,7 @@ def update(ip):
         virtualization = True,
         data = df.to_dict('records'),
         columns = [{'name': column, 'id': column} for column in all_cols],
-        page_size = 50,
+        page_size = 8,
         style_header={
             'backgroundColor': '#99ABBD',
             'color': 'black',

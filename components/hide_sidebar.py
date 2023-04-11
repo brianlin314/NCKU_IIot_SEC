@@ -165,16 +165,16 @@ sidebar = html.Div(
                                         }
                                     ]
                                 },
-                                {
-                                    'component': 'Item',
-                                    'props': 
-                                            {  
-                                                'key': '/Login',
-                                                'title': 'Login',
-                                                'icon': 'antd-deployment-unit',
-                                                'href': '/Login'
-                                            }
-                                },
+                                # {
+                                #     'component': 'Item',
+                                #     'props': 
+                                #             {  
+                                #                 'key': '/Login',
+                                #                 'title': 'Login',
+                                #                 'icon': 'antd-deployment-unit',
+                                #                 'href': '/Login'
+                                #             }
+                                # },
                             ],
                             mode='inline'
                         )

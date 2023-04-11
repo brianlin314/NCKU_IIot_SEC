@@ -1,14 +1,13 @@
 import dash_bootstrap_components as dbc
 from dash import dash_table
 import pandas as pd
-import json
-from pandas import json_normalize
 from datetime import date
 import dash_html_components as html
-import os
-
+from database import get_db
 import globals_variable
 from components import hids_logtojson
+import dash
+import datetime
 
 table_style = {
     "margin-left": "1rem",
@@ -27,33 +26,25 @@ def try_lambda(dic, key):
         pass
 
 def update(id):
-    cmd = 'sudo chmod  777 -R /var/ossec/logs/alerts/' # 更改wazuh 底下資料夾權限
-    password = globals_variable.sudoPassword
-    os.system('echo %s | sudo -S %s' % (password, cmd))
+    posts = get_db.connect_db()
     today = date.today()
-    todate = today.strftime("%Y/%m/%d")
-    #在server上需要取消註解這行 ：
-    # 使用strftime將日期格式轉成我們想要的格式
-    hids_logtojson.log2json(globals_variable.hidsdirpath+str(today.year)+'/'+today.strftime("%b")+'/ossec-alerts-'+str(today.day).zfill(2)+'.json')
-    #讀取json檔, 篩選今天的log內容
-    global df, df_
-    df = pd.read_json(open(globals_variable.hidsdirpath+str(today.year)+'/'+today.strftime("%b")+'/ossec-alerts-'+str(today.day).zfill(2)+'_1.json', "r", encoding="utf8"))
-    if len(df) == 0:
-        return html.H3("該時段無資料可顯示，請檢查ip位址是否設定正確!")
-    #在server上需要改 ： open(globals.hidsdirpath+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json'
-    df = df.loc[:, ["timestamp", "rule", "agent"]]
-    df_=pd.DataFrame()
-    df_['Date'] = df['timestamp'].apply(lambda x: x.strftime("%Y/%m/%d"))
-    df_['Time'] = df['timestamp'].apply(lambda x: x.strftime("%H:%M:%S"))
-    df_['Agent_ID'] = df['agent'].apply(lambda x: x['id'])
-    df_['Agent'] = df['agent'].apply(lambda x: x['name'])
-    df_['Event'] = df['rule'].apply(lambda x: try_lambda(x, 'description'))
-    df_['Level'] = df['rule'].apply(lambda x: x['level'])
-    df_= df_.sort_values(by='Time',ascending=False)
-    del df
-    df = df_
-    df = df[((df['Date'] == todate) & (df['Agent_ID'] == id))]
+    today = today.strftime("%Y/%m/%d")
+
+    query = {
+        '$and': [
+            # {'Date': {'$eq': today}},
+            {'agent.id': {'$eq': id}}
+        ]
+    }
+    projection = {"_id":0, "timestamp":1, "rule.description":1, "rule.level":1, "agent.id":1, "agent.name":1} 
+    data = list(posts.find(query, projection))
+    df = pd.json_normalize(data)
+    df = df.loc[:, ["timestamp", "rule.description", "rule.level", "agent.id", "agent.name"]]
+    df[['Date', 'Time']] = df.timestamp.str.split("T", expand = True)
+    df = df.drop(columns=['timestamp'])
+    df = df[['Date', 'Time', 'rule.description', 'rule.level', 'agent.id', 'agent.name']]
     all_cols = list(df.columns)
+    print(all_cols)
 
     table = dash_table.DataTable(
         virtualization=True,
@@ -83,28 +74,31 @@ def update(id):
         style_data_conditional=[
         {
             'if': {
-                'filter_query': '{Level} >= 8',
-                'column_id': 'Level'
+                'filter_query': '{rule.level} >= 8',
+                'column_id': 'rule.level'
             },
             'backgroundColor': '#FD4000',
             'color': 'white'
         },
         {
             'if': {
-                'filter_query': '{Level} >4 && {Level} < 8',
-                'column_id': 'Level'
+                'filter_query': '{rule.level} >4 && {rule.level} < 8',
+                'column_id': 'rule.level'
             },
             'backgroundColor': '#F7E277',
             'color': 'white'
         },
         {
             'if': {
-                'filter_query': '{Level} <=4',
-                'column_id': 'Level'
+                'filter_query': '{rule.level} <=4',
+                'column_id': 'rule.level'
             },
             'backgroundColor': '#90BD3C',
             'color': 'white'
         },
         ],
+        # page_action='auto',   # 後端分頁
+        # page_current=0,
+        page_size=30,
     )
     return table

@@ -7,9 +7,8 @@ import webbrowser
 from dash import dcc, html, callback
 from dash.dependencies import Input, Output, State
 from flask import Flask
-from flask_login import login_user, LoginManager, UserMixin, current_user
-from flask import send_from_directory, request, session, redirect
-import dash_auth
+from flask import send_from_directory, session
+
 
 ##########################
 ##       引用內部函式     ##
@@ -17,35 +16,15 @@ import dash_auth
 from components import navbar, hide_sidebar
 from pages import login, home, discover, security_events, non_exist, hids_logs, nids_logs, AI_prediction, usb, add_agents, add_usb, history, statistics
 
-
-VALID_USERNAME_PASSWORD = {"test": "test", "hello": "world"}
 warnings.filterwarnings("ignore", category=Warning) # 忽略匹配的警告
 server = Flask(__name__)
 app = dash.Dash(__name__, server=server, suppress_callback_exceptions=True)
 globals_variable.default() #初始化全域變數，只在重啟Dash的時候會呼叫
 
 ###########################
-##      Login Set up     ##
+##  SECRET_KEY Setting   ##
 ###########################
-server.config.update(SECRET_KEY='mijijidasdoksmer')
-# Login manager object will be used to login / logout users
-# login_manager = LoginManager()
-# login_manager.init_app(server)
-# login_manager.login_view = '/login'
-
-# User data model. It has to have at least self.id as a minimum
-
-# class User(UserMixin):
-#     def __init__(self, username):
-#         self.id = username
-
-# @ login_manager.user_loader
-# def load_user(username):
-#     ''' This function loads the user by user id. Typically this looks up the user from a user database.
-#         We won't be registering or looking up users in this example, since we'll just login using LDAP server.
-#         So we'll simply return a User object with the passed in username.
-#     '''
-#     return User(username)
+server.config.update(SECRET_KEY='mijijidasdoksmer') #可以隨便設定
 
 ##########################
 ##      Components      ##
@@ -92,9 +71,6 @@ def display_page(pathname): # 根據callack,返回所選頁面
     view = None
 
     if ('user' not in session):
-        view = login.serve_layout()
-        
-    elif (pathname in ['/login']) and ('user' not in session):
         view = login.serve_layout()
 
     elif (pathname in ['/', '/Home']) and ('user' in session):

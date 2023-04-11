@@ -10,13 +10,6 @@ import dash_html_components as html
 import globals_variable
 from components import nids_logtojson, nidslog_display
 # components
-hitNum = html.H1(
-    [
-        '載入資料中',
-        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
-    ],
-    style={'textAlign': 'center'}, id='dataNum'
-)
 
 dropdown_style = {
     "display":"inline-block",
@@ -49,7 +42,7 @@ table_style = {
     'minWidth': '100%',
     "position":"relative",
     "left":"0.5rem",
-    "top":"2rem",
+    "top":"10rem",
     
 }
 
@@ -65,9 +58,12 @@ def serve_layout():
                     style=dropdown_style
                 ),
             ),
-            dbc.Row(
+            html.Br(),
+            dcc.Loading(
                 html.Div(
-                        id='table'
+                    [
+                        dbc.Col(id='nids_log_table'),
+                    ],
                 ),style = table_style,
             )
         ],
@@ -76,13 +72,14 @@ def serve_layout():
     return layout
 
 @callback(
-    Output('table', 'children'),
+    Output('nids_log_table', 'children'),
     Input('agentselect', 'value'),
     prevent_initial_call=True
 )
 
 def update(value):
     try:
+        print("wasdaf")
         return nidslog_display.update(globals_variable.agent_ip[value])
     except:
         return dash.no_update

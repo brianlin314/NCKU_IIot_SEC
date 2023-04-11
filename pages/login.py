@@ -3,9 +3,8 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash import callback
-from flask import session, redirect
+from flask import session
 import dash_core_components as dcc
-from flask_login import login_user, LoginManager, UserMixin, current_user
 
 # modal = dbc.Modal(
 #             [

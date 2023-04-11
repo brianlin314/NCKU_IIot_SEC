@@ -163,6 +163,8 @@ def update(n_clicks, value, time):
     # 將 time 轉成 timestamp format, 並得到 interval
     startDate, endDate, freqs = process_time.get_time_info(time)
     try:
+        print("security event已經取得資料",globals_variable.agent_id[value])
         return se_display.update(startDate, endDate, freqs, globals_variable.agent_id[value])
     except:
+        print("security event未取得資料")
         return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update

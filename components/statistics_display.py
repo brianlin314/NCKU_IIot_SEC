@@ -3,10 +3,11 @@ import dash_bootstrap_components as dbc
 from dash import dcc
 import dash_html_components as html
 import datetime
-from components import nids_logtojson
 import pandas as pd
 import plotly.graph_objects as go
 import globals_variable
+from database import get_db
+import re
 
 # set donut chart top num
 class_topNum = 3
@@ -48,30 +49,53 @@ def update(startDate, endDate, freqs, ip):
     endtime = datetime.datetime.strptime(endDate, dateFormat).strftime("%H:%M:%S")
     startDate = datetime.datetime.strptime(startDate, dateFormat).strftime("%Y-%m-%d")
     endDate = datetime.datetime.strptime(endDate, dateFormat) .strftime("%Y-%m-%d")
-    nids_logtojson.log2json(globals_variable.nidsdirpath+"/fast.log")
 
-    #讀取json檔, 篩選今天的log內容
-    global df
-    df = pd.read_json(globals_variable.nidsdirpath+"/fast.json")
-    mask = df['Destination'].str.contains(ip)
-    df1 = df.loc[mask]
-    mask1 = df['Source'].str.contains(ip)
-    df2 = df.loc[mask1]
-    df = pd.concat([df1,df2])
-    # 若有資料
-    df.insert(0, '#', [i for i in range(1, len(df)+1)])
-    df['Date'] = pd.to_datetime(df['Date'])
-    mask = (df['Date'] >=startDate) &(df['Date'] <= endDate)
-    df = df.loc[mask]
+    nidsjson = get_db.connect_nidsdb()
+    escaped_ip = re.escape(ip)
 
-    df['Source'].value_counts()
-    df['Destination'].value_counts()
-    df['Protocol'].value_counts()
-    df['Classification'].value_counts()
+    query = {
+        '$or': [
+            {'$and': [
+                {'Date': startDate},
+                {'Time': {'$gte': starttime}}
+            ]},
+            {'$and': [
+                {'Date': endDate},
+                {'Time': {'$lte': endtime}}
+            ]},
+            {'$and': [
+                {'Date': {'$gt': startDate, '$lt': endDate}}
+            ]},
+            {'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
+            {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}
+        ]
+    }
+    total = nidsjson.count_documents(query)
 
-    total = df.shape[0]
-    high = df[df['Priority']==1].shape[0]
-
+    query1 = {
+        '$and': [
+            {'Priority': '1'},
+            {'$or': [
+                {'$and': [
+                    {'Date': startDate},
+                    {'Time': {'$gte': starttime}}
+                ]},
+                {'$and': [
+                    {'Date': endDate},
+                    {'Time': {'$lte': endtime}}
+                ]},
+                {'$and': [
+                    {'Date': {'$gt': startDate, '$lt': endDate}}
+                ]},
+                {'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
+                {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}
+            ]}
+        ]
+    }
+    high = nidsjson.count_documents(query1)
+    data = list(nidsjson.find(query))
+    df = pd.DataFrame(data)
+    df = df.drop(columns = '_id')
     labels = list(df['Classification'].value_counts().head(class_topNum).index)
     values = list(df['Classification'].value_counts().head(class_topNum).values)
     class_fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3)])

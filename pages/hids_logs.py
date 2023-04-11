@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import callback
+from dash import dcc, callback
 from dash.dependencies import Input, Output, State, ALL
 import feffery_antd_components as fac
 import pandas as pd
@@ -41,14 +41,14 @@ STYLE = { # 設定背景風格
     "top":"1rem"
 }
 
-table_style = { # 設定背景風格
+table_style = {
     "margin-right": "0.5rem",
     'width':'100%',
     'height':'500px',
     'minWidth': '100%',
     "position":"relative",
     "left":"0.5rem",
-    "top":"2rem",
+    "top":"10rem",
 }
 
 def serve_layout():
@@ -63,7 +63,8 @@ def serve_layout():
                     style=dropdown_style
                 ),
             ),
-            dbc.Row(
+            html.Br(),
+            dcc.Loading(
                 html.Div(
                         id='htable'
                 ),style = table_style,

@@ -162,7 +162,7 @@ def update(input_button_clicks, account, password): #第一個參數是Input的�
         data = json.load(json_file)
         for key, value in data.items():
             if (account == key) and (password == value):
-                return get_agents.process()
+                return get_agents.process() # Call from /components/get_agent.py, for read existing agent as json format
     return html.P("Login Error!"), dash.no_update
             
 @callback(

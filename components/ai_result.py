@@ -30,7 +30,7 @@ def airesult(ip):
     mask1 = (file["src_ip"] == ip)
     mask2 = (file["dst_ip"] == ip)
     file = file[(mask1|mask2)]
-
+    
     df_list = []
     df_list.append(file)
 

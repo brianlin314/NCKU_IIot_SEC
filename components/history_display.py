@@ -23,22 +23,26 @@ def update(startDate, endDate, freqs, ip):
 
     nidsjson = get_db.connect_nidsdb()
     escaped_ip = re.escape(ip)
-
+    print(startDate, endDate)
     query = {
         '$or': [
             {'$and': [
                 {'Date': startDate},
-                {'Time': {'$gte': starttime}}
+                {'Time': {'$gte': starttime}},
+                {'$or':[{'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
+                        {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}]}
             ]},
             {'$and': [
                 {'Date': endDate},
-                {'Time': {'$lte': endtime}}
+                {'Time': {'$lte': endtime}},
+                {'$or':[{'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
+                        {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}]}
             ]},
             {'$and': [
-                {'Date': {'$gt': startDate, '$lt': endDate}}
+                {'Date': {'$gt': startDate, '$lt': endDate}},
+                {'$or':[{'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
+                        {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}]}
             ]},
-            {'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
-            {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}
         ]
     }
     data = list(nidsjson.find(query))

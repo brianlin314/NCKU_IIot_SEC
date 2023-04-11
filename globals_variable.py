@@ -32,15 +32,17 @@ def default():
     user_psw = {'hello': 'world'}
     
 def initialize():
-    global posts, current_db, first, selected_fields, current_nids_db, n_selected_fields, add_next_click, all_fields, fields_num
+    global airesult, ai_num, current_ai_db, posts, current_db, nidsjson, n_num, first, selected_fields, current_nids_db, n_selected_fields, add_next_click, all_fields, fields_num
     first = 1
     sudoPassword = 'uscc^%^07SEC' # 虛擬機密碼
     dir_path = '/var/ossec/logs/alerts'
     nidsdirpath = '/var/log/suricata/'
+    pcapdirpath = './wirepcap/pcap/' 
     selected_fields = []
     n_selected_fields = []
     _, posts, num, current_db, = get_db.get_current_db(dir_path, sudoPassword)
     _, nidsjson, n_num, current_nids_db, = get_db.get_current_nidsdb(nidsdirpath , sudoPassword)
+    _, airesult, ai_num, current_ai_db, = get_db.get_current_aidb(pcapdirpath , sudoPassword)
     all_fields, fields_num = get_fields(posts)
     add_next_click = [1 for i in range(fields_num)]
 

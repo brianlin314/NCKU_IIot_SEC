@@ -45,8 +45,10 @@ def process():
             'fontWeight': 'bold',
             'textAlign': 'center',
             'border':'1px black solid',
+            'height': '20px',
         },
-        style_cell={'textAlign': 'center'},
+        style_table={'height': None, "width": "400px", 'overflow': 'auto', "display": "flex","flex-flow": "column"},
+        style_cell={'height': None, 'textAlign': 'center'},
     )
     button = fac.AntdRow(
                 fac.AntdButton(

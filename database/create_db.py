@@ -2,8 +2,14 @@ import os
 import json
 import glob
 import pickle as pkl
-from components import nids_logtojson
+from components import nids_logtojson, ai_result
 from itertools import islice
+import globals_variable
+import tensorflow as tf
+import xgboost as xgb
+import pandas as pd
+import numpy as np
+from datetime import datetime
 
 def record_last(last_date_info):
     file = open('last_date.pkl', 'wb')
@@ -122,8 +128,7 @@ def createnidsDB(database, dir_path, sudoPassword):
 
     for year_ in years:
         log_files = sorted(glob.glob(f'{year_}/*.log'))  # 找出所有日期的 .log files, 並由小到大排序
-        print("######################")
-        print(log_files)
+
         for i in range(len(log_files)):
             f = open(log_files[i], 'r')
             lines = f.readlines()
@@ -150,4 +155,82 @@ def createnidsDB(database, dir_path, sudoPassword):
         log_lines = [nids_logtojson.log2dic(line) for line in lines]
         num += len(lines)
         database.insert_many(log_lines)
+    return num
+
+def createaiDB(database, dir_path, sudoPassword):
+    # 更改目錄存取權限
+    change_permission(dir_path, sudoPassword)
+    lists = os.listdir(dir_path)     #列出目錄的下所有文件和文件夾保存到lists
+
+    q_list = []
+    for pcap in lists:
+        if os.path.getsize(dir_path+pcap) >= 50000000:
+            q_list.append(pcap)
+    q_list.sort(key=lambda fn:os.path.getmtime(dir_path + fn)) #按時間排序
+
+    num = 0
+    error_file = ''
+    # log_files = []
+
+    for i, pcap in enumerate(q_list):
+        data = []
+        if not os.path.isfile(globals_variable.csvdirpath+pcap+'.csv'):
+            cmd = f"cicflowmeter -f {dir_path+pcap} -c {globals_variable.csvdirpath}{pcap}.csv" # 將pcap通過cic-flowmeter轉成csv
+            os.system(cmd) # 將指令給os執行
+        with tf.device('/cpu:0'): # cpu運行
+            model = xgb.Booster()
+            model.load_model(globals_variable.model_path)
+        file = pd.read_csv(globals_variable.csvdirpath+pcap+'.csv')
+        df_list = []
+        df_list.append(file)
+
+        df = pd.concat(df_list, axis=0, ignore_index=True)
+        if len(df) == 0: # 若df沒資料，回傳0
+            return 0
+        del df_list
+
+        cleaned_data = df.dropna()
+        del df
+
+        X_test = cleaned_data.drop(columns = ["src_ip","dst_ip","src_port","timestamp", "protocol","psh_flag_cnt","init_fwd_win_byts","flow_byts_s","flow_pkts_s"], axis=1)
+        X_test = X_test.iloc[:, :].values
+        X_test = X_test.tolist()
+        print('model is analyzing...')
+        result = model.predict(xgb.DMatrix(X_test))
+        result = np.array(result)
+        pred_label=[[] for i in range(len(result))]
+        result=result.tolist()
+        for i in range(len(result)):
+            pred_label[i]=result[i].index(max(result[i]))
+        result=np.array(result)
+
+        cleaned_data['pred_label'] = pred_label
+        cleaned_data[['Date','Time']] = cleaned_data['timestamp'].str.split(' ', expand = True)
+        cleaned_data = cleaned_data.drop(columns= ["timestamp", 'flow_duration', 'flow_byts_s', 'flow_pkts_s', 'fwd_pkts_s', 'bwd_pkts_s', 'tot_fwd_pkts', 'tot_bwd_pkts', 'totlen_fwd_pkts', 'totlen_bwd_pkts', 'fwd_pkt_len_max', 'fwd_pkt_len_min', 'fwd_pkt_len_mean', 'fwd_pkt_len_std', 'bwd_pkt_len_max', 'bwd_pkt_len_min', 'bwd_pkt_len_mean', 'bwd_pkt_len_std', 'pkt_len_max', 'pkt_len_min', 'pkt_len_mean', 'pkt_len_std', 'pkt_len_var', 'fwd_header_len', 'bwd_header_len', 'fwd_seg_size_min', 'fwd_act_data_pkts', 'flow_iat_mean', 'flow_iat_max', 'flow_iat_min', 'flow_iat_std', 'fwd_iat_tot', 'fwd_iat_max', 'fwd_iat_min', 'fwd_iat_mean', 'fwd_iat_std', 'bwd_iat_tot', 'bwd_iat_max', 'bwd_iat_min', 'bwd_iat_mean', 'bwd_iat_std', 'fwd_psh_flags', 'bwd_psh_flags', 'fwd_urg_flags', 'bwd_urg_flags', 'fin_flag_cnt', 'syn_flag_cnt', 'rst_flag_cnt', 'psh_flag_cnt', 'ack_flag_cnt', 'urg_flag_cnt', 'ece_flag_cnt', 'down_up_ratio', 'pkt_size_avg', 'init_fwd_win_byts', 'init_bwd_win_byts', 'active_max', 'active_min', 'active_mean', 'active_std', 'idle_max', 'idle_min', 'idle_mean', 'idle_std', 'fwd_byts_b_avg', 'fwd_pkts_b_avg', 'bwd_byts_b_avg', 'bwd_pkts_b_avg', 'fwd_blk_rate_avg', 'bwd_blk_rate_avg', 'fwd_seg_size_avg', 'bwd_seg_size_avg', 'cwe_flag_count', 'subflow_fwd_pkts', 'subflow_bwd_pkts', 'subflow_fwd_byts', 'subflow_bwd_byts'])
+
+        #p.s釋放空間
+        del X_test
+        del result
+        del pred_label
+
+        try:
+            airesultline = cleaned_data.to_dict('records')
+        except:
+            print('轉dictionary失敗')
+
+        data += airesultline
+        print(f'{pcap} 有 {len(airesultline)} 筆資料')
+        try:
+            database.insert_many(data) # insert data into mongoDB
+        except:
+            print(f'insert failed')
+
+        try:
+            cmd2 = f"rm {dir_path+pcap}"
+            cmd3 = f"rm {globals_variable.csvdirpath}{pcap}.csv"
+            os.system(cmd2)
+            os.system(cmd3)
+            num += 1
+        except:
+            print("刪除檔案失敗")
     return num

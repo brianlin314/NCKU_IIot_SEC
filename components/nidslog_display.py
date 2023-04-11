@@ -27,22 +27,19 @@ table_style = {
 
 def update(ip):
     nidsjson = get_db.connect_nidsdb()
-    print(nidsjson)
     today = date.today()
     today = today.strftime("%m/%d/%Y")
 
     escaped_ip = re.escape(ip)
-    print(ip)
     query = {
         '$and': [
-            {'Date': {'$eq': '04/05/2023'}},
+            {'Date': {'$eq': today}},
             {'$or': [
                 {'Source': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}},
                 {'Destination': {'$regex': f'^{escaped_ip}(:\\d{{1,5}})?$'}}
             ]}
         ]
     }
-    print(query)
     data = list(nidsjson.find(query))
     df = pd.DataFrame(data)
     df = df.drop(columns = '_id')

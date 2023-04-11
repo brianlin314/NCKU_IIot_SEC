@@ -1,5 +1,5 @@
 import dash_bootstrap_components as dbc
-from dash import callback
+from dash import dcc, callback
 from dash.dependencies import Input, Output, State
 import feffery_antd_components as fac
 import pandas as pd
@@ -49,8 +49,7 @@ table_style = {
     'minWidth': '100%',
     "position":"relative",
     "left":"0.5rem",
-    "top":"2rem",
-    
+    "top":"10rem",
 }
 
 
@@ -66,9 +65,12 @@ def serve_layout():
                     style=dropdown_style
                 ),
             ),
-            dbc.Row(
+            html.Br(),
+            dcc.Loading(
                 html.Div(
-                        id='atable'
+                    [
+                        dbc.Col(id='atable'),
+                    ],
                 ),style = table_style,
             )
         ],

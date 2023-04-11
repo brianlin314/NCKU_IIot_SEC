@@ -43,7 +43,6 @@ table_style = {
     "position":"relative",
     "left":"0.5rem",
     "top":"10rem",
-    
 }
 
 def serve_layout():
@@ -79,7 +78,6 @@ def serve_layout():
 
 def update(value):
     try:
-        print("wasdaf")
         return nidslog_display.update(globals_variable.agent_ip[value])
     except:
         return dash.no_update

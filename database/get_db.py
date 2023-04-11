@@ -21,6 +21,9 @@ def get_current_db(dir_path, sudoPassword):
     return client, posts, num, current_db
 
 def get_current_nidsdb(dir_path, sudoPassword):
+    # 當 last_date.pkl 不存在時(更新版本), 刪除 DB 
+    # if not os.path.isfile('./last_nids_num.pkl'):
+    #     del_db.delete()
 
     # 建立和mongoDB連線，取用collection中的posts
     client = MongoClient()
@@ -38,6 +41,24 @@ def get_current_nidsdb(dir_path, sudoPassword):
         print("update",num,'DATA')
     return client, nidsjson, num, current_db
 
+
+def get_current_aidb(dir_path, sudoPassword):
+    # 當 last_date.pkl 不存在時(更新版本), 刪除 DB 
+    # if not os.path.isfile('./last_nids_num.pkl'):
+    #     del_db.delete()
+
+    # 建立和mongoDB連線，取用collection中的posts
+    client = MongoClient()
+    db = client['pythondb']
+    current_db = db.list_collection_names()
+    airesult = db.airesult
+
+    if db.airesult.count_documents({}) == 0:
+        num = create_db.createaiDB(airesult, dir_path, sudoPassword)
+    else:
+        num = create_db.createaiDB(airesult, dir_path, sudoPassword)
+    return client, airesult, num, current_db
+
 def connect_db():
     client = MongoClient()
     db = client['pythondb']
@@ -49,3 +70,9 @@ def connect_nidsdb():
     db = client['pythondb']
     nidsjson = db.nidsjson
     return nidsjson
+
+def connect_aidb():
+    client = MongoClient()
+    db = client['pythondb']
+    airesult = db.airesult
+    return airesult

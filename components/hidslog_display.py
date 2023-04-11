@@ -28,11 +28,10 @@ def try_lambda(dic, key):
 def update(id):
     posts = get_db.connect_db()
     today = date.today()
-    today = today.strftime("%Y/%m/%d")
+    today = today.strftime("%Y-%m-%d")
 
     query = {
         '$and': [
-            # {'Date': {'$eq': today}},
             {'agent.id': {'$eq': id}}
         ]
     }
@@ -43,6 +42,8 @@ def update(id):
     df[['Date', 'Time']] = df.timestamp.str.split("T", expand = True)
     df = df.drop(columns=['timestamp'])
     df = df[['Date', 'Time', 'rule.description', 'rule.level', 'agent.id', 'agent.name']]
+    mask = df['Date'] == today
+    df = df[mask]
     all_cols = list(df.columns)
     print(all_cols)
 

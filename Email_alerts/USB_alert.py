@@ -85,4 +85,3 @@ if __name__ == "__main__":
 
             info = json.loads(lines[-1])
             timestamp_check = info["timestamp"].split("+")[0]
-                

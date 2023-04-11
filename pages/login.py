@@ -6,41 +6,12 @@ from dash import callback
 from flask import session
 import dash_core_components as dcc
 
-# modal = dbc.Modal(
-#             [
-#                 dbc.ModalHeader("NCKU-IIOT-SEC"),
-#                 dbc.ModalBody(
-#                     [
-#                         dbc.Input(
-#                             type="text",
-#                             placeholder="請輸入用戶名",
-#                             id="username-input",
-#                             className="mb-3",
-#                         ),
-#                         dbc.Input(
-#                             type="password",
-#                             placeholder="請輸入密碼",
-#                             id="password-input",
-#                             className="mb-3",
-#                         ),
-#                         dbc.Button("登入", id="login-button", color="primary", block=True),
-#                     ]
-#                 ),
-#                 dbc.ModalFooter(
-#                     [
-#                         html.Div(children='', id='output-state'),
-#                     ]
-#                 )
-#             ],
-#             id="login-modal",
-#             is_open = True,
-#         )
-def serve_layout():
+def serve_layout(): # login 彈出式介面
     layout = html.Div(
         [
             dbc.Modal(
                 [
-                    dbc.ModalHeader("NCKU-IIOT-SEC"),
+                    dbc.ModalHeader("NCKU-IIOT-SEC"), 
                     dbc.ModalBody(
                         [
                             dbc.Input(

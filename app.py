@@ -9,7 +9,6 @@ from dash.dependencies import Input, Output, State
 from flask import Flask
 from flask import send_from_directory, session
 
-
 ##########################
 ##       引用內部函式     ##
 ##########################
@@ -19,7 +18,7 @@ from pages import login, home, discover, security_events, non_exist, hids_logs, 
 warnings.filterwarnings("ignore", category=Warning) # 忽略匹配的警告
 server = Flask(__name__)
 app = dash.Dash(__name__, server=server, suppress_callback_exceptions=True)
-globals_variable.default() #初始化全域變數，只在重啟Dash的時候會呼叫
+globals_variable.default() # 初始化全域變數，只在重啟Dash的時候會呼叫
 
 ###########################
 ##  SECRET_KEY Setting   ##
@@ -29,7 +28,7 @@ server.config.update(SECRET_KEY='mijijidasdoksmer') #可以隨便設定
 ##########################
 ##      Components      ##
 ##########################
-global first 
+global first # used by /page/security_events.py & /components/alert.py, 用來更新alert的筆數
 first = 1
 
 # login_modal = login.modal
@@ -70,10 +69,10 @@ def display_page(pathname): # 根據callack,返回所選頁面
 
     view = None
 
-    if ('user' not in session):
+    if ('user' not in session): # 檢查 user 是否在 session 中，其中 'user' 不是字串，而是 login.py 中的 session['user']，他可以直接呼叫
         view = login.serve_layout()
 
-    elif (pathname in ['/', '/Home']) and ('user' in session):
+    elif (pathname in ['/', '/Home']) and ('user' in session): 
         view = home.serve_layout()
 
     elif (pathname == '/Host_based/Discover') and ('user' in session):
@@ -82,7 +81,7 @@ def display_page(pathname): # 根據callack,返回所選頁面
     elif (pathname == '/Host_based/Security_events') and ('user' in session):
         view = security_events.serve_layout(first)
 
-    elif (pathname == '/Host_based/logs') and  ('user' in session):
+    elif (pathname == '/Host_based/logs') and ('user' in session):
         view = hids_logs.serve_layout()
 
     elif (pathname == '/Network_based/History') and ('user' in session):
@@ -133,9 +132,9 @@ def serving_lottie_success():
 
 if __name__ == '__main__':
     app.run_server(debug=True) # 每次更新時都可以直接查看網頁，而不用重新執行py
-    pid = os.fork()
-    if pid != 0:
-        app.run_server()
-    else:
-        url = "http://127.0.0.1:8050/"
-        webbrowser.open(url)
+    # pid = os.fork()
+    # if pid != 0:
+    #     app.run_server()
+    # else:
+    #     url = "http://127.0.0.1:8050/"
+    #     webbrowser.open(url)

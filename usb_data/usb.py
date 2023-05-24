@@ -35,7 +35,31 @@ def usbdf():
                     usb_detail["connected"] = 1
                     usb_detail["UsbPort"] = full_log[-3].strip(":")
                     port_state[usb_port] = usb_detail.copy()
-                    
+                    print(usb_port)
+
+            if info["rule"]["id"] == '111000':
+                print("window detected!")
+                usb_detail["In_Date"] = info["timestamp"].split("T")[0]
+                usb_detail["In_Time"] = info["timestamp"].split("T")[1].split(".")[0]
+                usb_detail["Out_Date"] = '-'
+                usb_detail["Out_Time"] = '-'
+                usb_detail["agent_id"] = info["agent"]["id"]
+                usb_detail["agent_name"] = info["agent"]["name"]
+                usb_detail["authorized"] = "black"
+                usb_detail["SerialNum"] = info["data"]["win"]["eventdata"]["deviceId"].split(";")[3].split('\\\\')[1].split("&")[0]
+                for cline in cdb_line:
+                    cline = ast.literal_eval(cline)
+                    if usb_detail["SerialNum"] == cline["cdb_SN"] and cline["Aid"] == usb_detail["agent_id"]:
+                        usb_detail["authorized"] = "white"
+                usb_port = "None"
+                usb_detail["connected"] = 1
+                usb_detail["UsbPort"] = usb_port
+                port_state[usb_port] = usb_detail.copy()
+                json.dump(port_state[usb_port], usb_file)
+                usb_file.write('\n')
+                print("window done!")
+            
+
             if info["rule"]["id"]=='81102' and info["location"]=='/var/log/kern.log':
                 full_log=info["full_log"].split(" ")
                 usb_port_exit=full_log[-6].strip(":")
@@ -47,7 +71,7 @@ def usbdf():
                     usb_file.write('\n')
                 except:
                     print("drop")
-                
+
     for _, state in port_state.items():
         if state["connected"] == 1:
             json.dump(state, usb_file)

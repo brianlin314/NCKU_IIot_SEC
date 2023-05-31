@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import callback
 import feffery_antd_components as fac  
 from dash.dependencies import Input, Output, State
-import dash_html_components as html
+from dash import html
 import globals_variable
 
 import ast

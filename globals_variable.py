@@ -3,7 +3,7 @@ from database import get_db
 from datetime import date
 from components import nids_logtojson
 def default():
-    global user_psw , posts, model_path, usb_add_options, sudoPassword, dir_path, agent_ip, agent_id, nids_agent_options, hids_agent_options, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, hidsdirpath, nidsdirpath, pcapdirpath, csvdirpath
+    global posts, model_path, usb_add_options, sudoPassword, dir_path, agent_ip, agent_id, nids_agent_options, hids_agent_options, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, hidsdirpath, nidsdirpath, pcapdirpath, csvdirpath
     sudoPassword = 'uscc^%^07SEC' # 虛擬機密碼
     dir_path = '/var/ossec/logs/alerts'
     hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
@@ -27,9 +27,8 @@ def default():
         {'label':'PC_2','value':'002'},
         {'label':'PC_3','value':'003'},
     ]
-    agent_ip = {'Server' : '192.168.20.146', 'PCs' : '210.61.41.223'}
+    agent_ip = {'Server' : '210.61.41.228', 'PCs' : '210.61.41.223'}
     agent_id = {'Server' : '000', 'PC_1' : '001', 'PC_2' : '002', 'PC_3' : '003'}
-    user_psw = {'hello': 'world'}
     
 def initialize():
     global airesult, ai_num, current_ai_db, posts, current_db, nidsjson, n_num, first, selected_fields, current_nids_db, n_selected_fields, add_next_click, all_fields, fields_num

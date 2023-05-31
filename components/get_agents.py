@@ -3,7 +3,7 @@ import globals_variable
 from dash import dash_table
 import pandas as pd
 import time
-import dash_html_components as html
+from dash import html
 import feffery_antd_components as fac 
 
 def process():

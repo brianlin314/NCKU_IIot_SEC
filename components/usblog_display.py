@@ -6,7 +6,7 @@ import json
 from pandas import json_normalize
 from datetime import date
 import dash
-import dash_html_components as html
+from dash import html
 
 from usb_data import usb
 

@@ -1,10 +1,10 @@
 import dash
-import dash_html_components as html
+from dash import html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, State
 from dash import callback
 from flask import session
-import dash_core_components as dcc
+from dash import dcc
 
 def serve_layout(): # login 彈出式介面
     layout = html.Div(
@@ -59,7 +59,7 @@ def serve_layout(): # login 彈出式介面
 
 def login_button_click(login_button, username, password):
     if login_button > 0:
-        if username == 'test' and password == 'test':
+        if username == 'jufan' and password == 'jufan':
             session['user'] = username
             return dcc.Location(pathname="/Home", id="someid_doesnt_matter"), '', False
         else:

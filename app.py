@@ -1,5 +1,5 @@
 ##########################
-##       引用外部套件     ##
+##       引用外部套件    ##
 ##########################
 import warnings, os, globals_variable
 import dash
@@ -10,7 +10,7 @@ from flask import Flask
 from flask import send_from_directory, session
 
 ##########################
-##       引用內部函式     ##
+##       引用內部函式    ##
 ##########################
 from components import navbar, hide_sidebar
 from pages import login, home, discover, security_events, non_exist, hids_logs, nids_logs, AI_prediction, usb, add_agents, add_usb, history, statistics

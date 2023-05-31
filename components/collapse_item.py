@@ -2,7 +2,7 @@ import pandas as pd
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output, MATCH
 from dash import callback
-import dash_html_components as html
+from dash import html
 
 import globals_variable
 

@@ -3,7 +3,7 @@ from dash import callback
 import feffery_antd_components as fac  
 import dash
 from dash.dependencies import Input, Output, State
-import dash_html_components as html
+from dash import html
 import globals_variable
 import json
 import ast

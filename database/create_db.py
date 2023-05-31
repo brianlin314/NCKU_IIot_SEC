@@ -75,7 +75,7 @@ def createDB(database, dir_path, sudoPassword):
         for month in months:
             json_files = sorted(glob.glob(f'{year_}/{month}/*.json'))  # 找出所有日期的 .json files, 並由小到大排序
             for i in range(len(json_files)):
-                f = open(json_files[i], 'r')
+                f = open(json_files[i], 'r', errors='replace')
                 lines = f.readlines()
 
                 # 紀錄每月最後有資料的日期, data數目 => 紀錄 last date info
@@ -94,7 +94,7 @@ def createDB(database, dir_path, sudoPassword):
         database.insert_many(data) # insert data into mongoDB
     except:
         print(f'重新 insert {error_file}')
-        f = open(error_file, 'r')
+        f = open(error_file, 'r', errors='replace')
         lines = f.readlines()
         json_lines = [json.loads(line) for line in lines]
         num += len(lines)
@@ -125,12 +125,13 @@ def createnidsDB(database, dir_path, sudoPassword):
     data = []
     error_file = ''
     log_files = []
+    log_lines = []
 
     for year_ in years:
         log_files = sorted(glob.glob(f'{year_}/*.log'))  # 找出所有日期的 .log files, 並由小到大排序
 
         for i in range(len(log_files)):
-            f = open(log_files[i], 'r')
+            f = open(log_files[i], 'r', errors='replace')
             lines = f.readlines()
 
             # 紀錄每月最後有資料的日期, data數目 => 紀錄 last date info

@@ -2,7 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import dash_table
 import pandas as pd
 from datetime import date
-import dash_html_components as html
+from dash import html
 from database import get_db
 import globals_variable
 from components import hids_logtojson

@@ -4,7 +4,7 @@ import pandas as pd
 import json
 from pandas import json_normalize
 from datetime import date
-import dash_html_components as html
+from dash import html
 import os
 import dash
 import globals_variable

@@ -3,7 +3,7 @@ import dash
 from dash import dcc, callback
 from dash.dependencies import Input, Output, State
 import feffery_antd_components as fac
-import dash_html_components as html
+from dash import html
 
 from process_time import process_time
 from components import datePicker, statistics_display

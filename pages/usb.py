@@ -5,7 +5,7 @@ from dash_extensions import Lottie
 from dash import dcc, callback
 from dash.dependencies import Input, Output, State, ALL
 from datetime import date
-import dash_html_components as html
+from dash import html
 
 import pandas as pd
 import globals_variable

@@ -7,7 +7,7 @@ import feffery_antd_components as fac
 from process_time import process_time
 from components import datePicker, se_display, alert
 import globals_variable
-import dash_html_components as html
+from dash import html
 
 options = dict(loop=True, autoplay=True, rendererSettings=dict(preserveAspectRatio='xMidYMid slice'))
 dropdown_style = {

@@ -4,7 +4,7 @@ from dash.dependencies import Input, Output, State, ALL
 import feffery_antd_components as fac
 import pandas as pd
 from datetime import date
-import dash_html_components as html
+from dash import html
 
 import globals_variable
 from components import hidslog_display

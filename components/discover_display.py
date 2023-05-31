@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 from dash import dcc, callback, dash_table
-import dash_html_components as html
+from dash import html
 
 import globals_variable
 from plot import bar

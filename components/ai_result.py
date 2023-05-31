@@ -54,7 +54,7 @@ def airesult(ip):
 
     cleaned_data['pred_label'] = pred_label
     
-     #p.s釋放空間
+    #p.s釋放空間
     del X_test
     del result
     del pred_label

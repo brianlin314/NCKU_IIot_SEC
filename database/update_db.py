@@ -50,7 +50,7 @@ def update_db(posts, dir_path, sudoPassword):
     # 特殊處理上次更新的最後一天
     data = []
     last_y, last_m, last_d = get_time_info(dates_lst[0])
-    f = open(f'{dir_path}/{last_y}/{convert_month[last_m]}/ossec-alerts-{last_d}.json', 'r')
+    f = open(f'{dir_path}/{last_y}/{convert_month[last_m]}/ossec-alerts-{last_d}.json', 'r', errors='replace')
     lines = f.readlines()
     update_lines = lines[last_cnt:]
     try:
@@ -68,7 +68,7 @@ def update_db(posts, dir_path, sudoPassword):
     for date in dates_lst[1:]:
         year, month, day = get_time_info(date)
         try:
-            f = open(f'{dir_path}/{year}/{convert_month[month]}/ossec-alerts-{day}.json', 'r')
+            f = open(f'{dir_path}/{year}/{convert_month[month]}/ossec-alerts-{day}.json', 'r', errors='replace')
             lines = f.readlines()
 
             # 更新 last date info
@@ -115,7 +115,7 @@ def update_nidsdb(nidsjson, dir_path, sudoPassword):
     # 特殊處理上次更新的最後一天
     data = []
     last_y, last_m, last_d = get_time_info(dates_lst[0])
-    f = open(f'{dir_path}/{last_y}/fast-{last_m}-{last_d}.log', 'r')
+    f = open(f'{dir_path}/{last_y}/fast-{last_m}-{last_d}.log', 'r', errors='replace')
     lines = f.readlines()
     update_lines = lines[last_cnt:]
     try:
@@ -133,7 +133,7 @@ def update_nidsdb(nidsjson, dir_path, sudoPassword):
     for date in dates_lst[1:]:
         year, month, day = get_time_info(date)
         try:
-            f = open(f'{dir_path}/{year}/fast-{month}-{day}.log', 'r')
+            f = open(f'{dir_path}/{year}/fast-{month}-{day}.log', 'r', errors='replace')
             lines = f.readlines()
 
             # 更新 last date info

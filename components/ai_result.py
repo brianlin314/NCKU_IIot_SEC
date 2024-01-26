@@ -7,8 +7,8 @@ import xgboost as xgb
 from xgboost import XGBClassifier
 import pickle
 import numpy as np
-import globals_variable
 import tensorflow as tf
+import get_config
 
 def new_report(test_report):
     lists = os.listdir(test_report)     #列出目錄的下所有文件和文件夾保存到lists
@@ -17,15 +17,16 @@ def new_report(test_report):
     return file_new
 
 def airesult(ip):
-    pcappath = new_report(globals_variable.pcapdirpath)
+    config = get_config.get_variable()
+    pcappath = new_report(config.pcapdirpath)
     file = os.path.split(pcappath)[-1]
-    cmd = f"cicflowmeter -f {pcappath} -c {globals_variable.csvdirpath}{file}.csv" # 將pcap通過cic-flowmeter轉成csv
+    cmd = f"cicflowmeter -f {pcappath} -c {config.csvdirpath}{file}.csv" # 將pcap通過cic-flowmeter轉成csv
     os.system(cmd) # 將指令給os執行
     with tf.device('/cpu:0'): # cpu運行
         model = xgb.Booster()
-        model.load_model(globals_variable.model_path) # 載入model
+        model.load_model(config.model_path) # 載入model
 
-    csvpath = new_report(globals_variable.csvdirpath)
+    csvpath = new_report(config.csvdirpath)
     file = pd.read_csv(csvpath)
     mask1 = (file["src_ip"] == ip)
     mask2 = (file["dst_ip"] == ip)

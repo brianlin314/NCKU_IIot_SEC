@@ -7,7 +7,7 @@ from process_time import process_time
 
 def update(startDate, endDate, freqs, selected_fields, id):
     # connect to database
-    posts = get_db.connect_db()
+    posts = get_db.connect_db("hids")
 
     # 根據 interval 切割 startDate ~ endDate
     intervals = list(pd.date_range(startDate, endDate, freq=freqs))
@@ -62,7 +62,7 @@ def update(startDate, endDate, freqs, selected_fields, id):
 
 def se_update(startDate, endDate, freqs, col_name, title, top_num, id):
     # connect to database
-    posts = get_db.connect_db()
+    posts = get_db.connect_db("hids")
 
     # 根據 interval 切割 startDate ~ endDate
     intervals = list(pd.date_range(startDate, endDate, freq=freqs))

@@ -26,7 +26,7 @@ def try_lambda(dic, key):
         pass
 
 def update(id):
-    posts = get_db.connect_db()
+    posts = get_db.connect_db("hids")
     today = date.today()
     today = today.strftime("%Y-%m-%d")
 

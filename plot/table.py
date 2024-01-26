@@ -6,7 +6,7 @@ from database import get_suricatadb
 from process_time import process_time
 
 def update(currentDate, freqs):
-    posts = get_suricatadb.connect_db()
+    posts = get_suricatadb.connect_db("hids")
 
     intervals = list(pd.date_range(currentDate, freq=freqs))
 

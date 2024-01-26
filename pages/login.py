@@ -1,10 +1,10 @@
 import dash
-from dash import html
 import dash_bootstrap_components as dbc
+import json
+from dash import callback, dcc, html
 from dash.dependencies import Input, Output, State
-from dash import callback
 from flask import session
-from dash import dcc
+
 
 def serve_layout(): # login 彈出式介面
     layout = html.Div(
@@ -58,8 +58,13 @@ def serve_layout(): # login 彈出式介面
 )
 
 def login_button_click(login_button, username, password):
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+        username = config['dash_user_name']
+        userpassword = config['dash_user_password']
+
     if login_button > 0:
-        if username == 'jufan' and password == 'jufan':
+        if username == username and password == userpassword:
             session['user'] = username
             return dcc.Location(pathname="/Home", id="someid_doesnt_matter"), '', False
         else:

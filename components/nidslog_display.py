@@ -26,7 +26,7 @@ table_style = {
 # global CONFIG
 
 def update(ip):
-    nidsjson = get_db.connect_nidsdb()
+    nidsjson = get_db.connect_db('nids')
     today = date.today()
     today = today.strftime("%m/%d/%Y")
 

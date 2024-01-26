@@ -1,5 +1,5 @@
 from subprocess import Popen, PIPE
-import globals_variable
+import get_config
 from dash import dash_table
 import pandas as pd
 import time
@@ -7,7 +7,8 @@ from dash import html
 import feffery_antd_components as fac 
 
 def process():
-    sudo_password = "echo "+ globals_variable.sudoPassword+"\n"
+    config = get_config.get_variable()
+    sudo_password = "echo "+ config.sudoPassword+"\n"
     command = 'cd /var/ossec/bin\n'
     cmd2 = './agent_control -l\n'
     p = Popen('sudo -s\n', shell= True, stdin=PIPE,  stdout=PIPE)

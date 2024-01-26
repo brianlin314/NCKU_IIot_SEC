@@ -4,12 +4,13 @@ import glob
 import pickle as pkl
 from components import nids_logtojson, ai_result
 from itertools import islice
-import globals_variable
+import get_config
 import tensorflow as tf
 import xgboost as xgb
 import pandas as pd
 import numpy as np
 from datetime import datetime
+import subprocess
 
 def record_last(last_date_info):
     file = open('last_date.pkl', 'wb')
@@ -17,22 +18,19 @@ def record_last(last_date_info):
     file.close()
 
 def change_permission(dir_path, sudoPassword):
-    cmd = f"sudo chmod  777 -R {dir_path}" # 更改wazuh 底下資料夾權限
-    os.system('echo %s | sudo -S %s' % (sudoPassword, cmd))
-    # paths = dir_path.split('/')
-    # for i in range(2, len(paths)+1):
-    #     path = '/'.join(paths[:i])
-
-    #     # 若 path permission 已經為 777, 則不用改變他的 permission
-    #     if oct(os.stat(path).st_mode)[-3:] == '777':
-    #         continue
-
-    #     if i != len(paths):
-    #         changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 {path}"
-    #         os.system(changePermission_cmd)
-    #     else:
-    #         changePermission_cmd = f"echo {sudoPassword} | sudo -S chmod 777 -R {path}"
-    #         os.system(changePermission_cmd)
+    paths = dir_path.split('/')
+    path = '/'.join(paths[:3])
+    try:
+        if oct(os.stat(path).st_mode)[-3:] == '777':
+            print(path, 'is already 777')
+            return
+        else:
+            cmd = f"sudo chmod 777 -R {path}"
+            subprocess.run(['sudo', '-S', *cmd.split()], input=sudoPassword.encode(), check=True)
+            return
+    except:
+        print(path, 'Permission denied')
+        return
 
 def unzip(dir_path, sudoPassword):
     gz_files = glob.glob(f'{dir_path}/**/*.json.gz', recursive=True)
@@ -89,8 +87,8 @@ def createDB(database, dir_path, sudoPassword):
                 except:
                     error_file = json_files[i]
                 data += json_lines
-                # print(f'{json_files[i]} 有 {len(lines)} 筆資料')
     try:
+        print("createDB:", data)
         database.insert_many(data) # insert data into mongoDB
     except:
         print(f'重新 insert {error_file}')
@@ -159,6 +157,7 @@ def createnidsDB(database, dir_path, sudoPassword):
     return num
 
 def createaiDB(database, dir_path, sudoPassword):
+    config = get_config.get_variable()
     # 更改目錄存取權限
     change_permission(dir_path, sudoPassword)
     lists = os.listdir(dir_path)     #列出目錄的下所有文件和文件夾保存到lists
@@ -175,13 +174,13 @@ def createaiDB(database, dir_path, sudoPassword):
 
     for i, pcap in enumerate(q_list):
         data = []
-        if not os.path.isfile(globals_variable.csvdirpath+pcap+'.csv'):
-            cmd = f"cicflowmeter -f {dir_path+pcap} -c {globals_variable.csvdirpath}{pcap}.csv" # 將pcap通過cic-flowmeter轉成csv
+        if not os.path.isfile(config["csvdirpath"]+pcap+'.csv'):
+            cmd = f"cicflowmeter -f {dir_path+pcap} -c {config['csvdirpath']}{pcap}.csv" # 將pcap通過cic-flowmeter轉成csv
             os.system(cmd) # 將指令給os執行
         with tf.device('/cpu:0'): # cpu運行
             model = xgb.Booster()
-            model.load_model(globals_variable.model_path)
-        file = pd.read_csv(globals_variable.csvdirpath+pcap+'.csv')
+            model.load_model(config["model_path"])
+        file = pd.read_csv(config["csvdirpath"]+pcap+'.csv')
         df_list = []
         df_list.append(file)
 
@@ -228,7 +227,7 @@ def createaiDB(database, dir_path, sudoPassword):
 
         try:
             cmd2 = f"rm {dir_path+pcap}"
-            cmd3 = f"rm {globals_variable.csvdirpath}{pcap}.csv"
+            cmd3 = f"rm {config['csvdirpath']}{pcap}.csv"
             os.system(cmd2)
             os.system(cmd3)
             num += 1

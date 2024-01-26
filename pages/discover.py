@@ -1,13 +1,13 @@
-import dash_bootstrap_components as dbc # 引入外部套件
 import dash
+import dash_bootstrap_components as dbc  # 引入外部套件
 import feffery_antd_components as fac
-from dash import dcc, callback
-from dash.dependencies import Input, Output, State, ALL
-from process_time import process_time
-from dash import html
+from dash import callback, dcc, html
+from dash.dependencies import ALL, Input, Output, State
 
-import globals_variable # 引用內部函式
-from components import fields, datePicker, discover_display, collapse_item, alert
+import globals_variable  # 引用內部函式
+from components import (alert, collapse_item, datePicker, discover_display,
+                        fields)
+from process_time import process_time
 
 dropdown_style = {
     "display":"inline-block",
@@ -99,6 +99,7 @@ def serve_layout(first):
 )
 def update(n_clicks, add_btn, del_btns, value, time): # dagentselect, 參數必須照input順序填入
     # 將 time 轉成 timestamp format, 並得到 interval
+
     startDate, endDate, freqs = process_time.get_time_info(time)
     try:
         return discover_display.update(startDate, endDate, freqs, globals_variable.agent_id[value])

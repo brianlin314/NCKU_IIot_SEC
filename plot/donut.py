@@ -4,7 +4,7 @@ from database import get_db
 
 def calculate_cnt(startDate, endDate, col_name, id):
     # connect to database
-    posts = get_db.connect_db()
+    posts = get_db.connect_db("hids")
 
     # get the set of col_values
     set_values = posts.distinct(col_name)

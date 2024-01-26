@@ -7,7 +7,7 @@ import globals_variable
 from plot import bar
 from components.se_display import CONFIG
 
-global CONFIG
+
 
 BAR_STYLE = {'zIndex':1} #'border':'1px black solid', 
 
@@ -113,7 +113,6 @@ def update(startDate, endDate, freqs, id):
         ),
         table,
     ]
-
     return [f'從 {startDate} 到 {endDate}', f'{len(df)} hits', display]
 
 # 後端分頁, 以減少延遲和內存壓力, 外加排序功能

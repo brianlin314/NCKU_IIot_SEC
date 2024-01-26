@@ -96,7 +96,7 @@ def update(startDate, endDate, freqs, id):
     second_row = [donut_agent_graph, bar_agent_graph]
 
     # get num
-    posts = get_db.connect_db()
+    posts = get_db.connect_db("hids")
     total = posts.count_documents({'$and':[{'timestamp': {"$gte":startDate}},
                                            {'timestamp': {"$lte":endDate}},
                                            {'agent.id':{"$eq":id}}]})

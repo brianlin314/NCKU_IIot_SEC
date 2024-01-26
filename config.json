@@ -1,0 +1,38 @@
+{
+    "mongoUrl": "mongodb://root:ncku@localhost:27017/",
+    "dash_user_name": "admin",
+    "dash_user_password": "admin",
+    "sudoPassword": "ncku",
+    "dir_path": "/var/ossec/logs/alerts",
+    "hidsdirpath": "/var/ossec/logs/alerts/",
+    "nidsdirpath": "/var/log/suricata/",
+    "pcapdirpath": "./wirepcap/pcap/",
+    "csvdirpath": "./wirepcap/csv/",
+    "model_path": "cic_xgboost.bin",
+    "nids_agent_options": [
+        {"label": "Server", "value": "Server"},
+        {"label": "PCs", "value": "PCs"}
+    ],
+    "hids_agent_options": [
+        {"label": "Server", "value": "Server"},
+        {"label": "PC_1", "value": "PC_1"},
+        {"label": "PC_2", "value": "PC_2"},
+        {"label": "PC_3", "value": "PC_3"}
+    ],
+    "usb_add_options": [
+        {"label": "Server", "value": "000"},
+        {"label": "PC_1", "value": "001"},
+        {"label": "PC_2", "value": "002"},
+        {"label": "PC_3", "value": "003"}
+    ],
+    "agent_ip": {
+        "Server": "210.61.41.228",
+        "PCs": "210.61.41.223"
+    },
+    "agent_id": {
+        "Server": "000",
+        "PC_1": "001",
+        "PC_2": "002",
+        "PC_3": "003"
+    }
+}

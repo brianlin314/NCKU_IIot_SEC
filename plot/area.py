@@ -10,7 +10,7 @@ def update(startDate, endDate, col_name, freqs, title, id):
     display_cols = {'_id':0, col_name:1}
 
     # connect to database
-    posts = get_db.connect_db()
+    posts = get_db.connect_db("hids")
 
     # get the set of col_values
     set_values = posts.distinct('rule.level')

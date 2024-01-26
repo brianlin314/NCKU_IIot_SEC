@@ -50,7 +50,7 @@ def update(startDate, endDate, freqs, ip):
     startDate = datetime.datetime.strptime(startDate, dateFormat).strftime("%Y-%m-%d")
     endDate = datetime.datetime.strptime(endDate, dateFormat) .strftime("%Y-%m-%d")
 
-    nidsjson = get_db.connect_nidsdb()
+    nidsjson = get_db.connect_db("nids")
     escaped_ip = re.escape(ip)
 
     query = {

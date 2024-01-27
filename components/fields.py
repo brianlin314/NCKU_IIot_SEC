@@ -1,5 +1,5 @@
-from dash import html
 import dash_bootstrap_components as dbc
+from dash import html
 
 from components import collapse_item
 
@@ -14,7 +14,6 @@ FIELD_STYLE = {
     'width':300,
     "maxHeight": "738px",
     'zIndex':1,
-    # 'border':'1px black solid',
     "overflow": "scroll",
 }
 

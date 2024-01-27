@@ -1,13 +1,13 @@
+import datetime
+import re
+
 import dash
 import dash_bootstrap_components as dbc
-from dash import dcc
-from dash import html
-import datetime
 import pandas as pd
 import plotly.graph_objects as go
-import globals_variable
+from dash import dcc, html
+
 from database import get_db
-import re
 
 # set donut chart top num
 class_topNum = 3
@@ -93,6 +93,7 @@ def update(startDate, endDate, freqs, ip):
         ]
     }
     high = nidsjson.count_documents(query1)
+    
     data = list(nidsjson.find(query))
     df = pd.DataFrame(data)
     df = df.drop(columns = '_id')

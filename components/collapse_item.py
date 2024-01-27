@@ -1,8 +1,7 @@
-import pandas as pd
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output, MATCH
-from dash import callback
-from dash import html
+import pandas as pd
+from dash import callback, html
+from dash.dependencies import MATCH, Input, Output
 
 import globals_variable
 

@@ -1,13 +1,10 @@
 import dash_bootstrap_components as dbc
+from dash import callback, dash_table, dcc, html
 from dash.dependencies import Input, Output
-from dash import dcc, callback, dash_table
-from dash import html
 
 import globals_variable
-from plot import bar
 from components.se_display import CONFIG
-
-
+from plot import bar
 
 BAR_STYLE = {'zIndex':1} #'border':'1px black solid', 
 

@@ -1,6 +1,7 @@
+import json
+
 import dash
 import dash_bootstrap_components as dbc
-import json
 from dash import callback, dcc, html
 from dash.dependencies import Input, Output, State
 from flask import session

@@ -1,13 +1,13 @@
-import dash_bootstrap_components as dbc
 import dash
-from dash import dcc, callback
+import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
+from dash import callback, dcc, html
 from dash.dependencies import Input, Output, State
 from dash_extensions import Lottie
-import feffery_antd_components as fac
-from process_time import process_time
-from components import datePicker, se_display, alert
+
 import globals_variable
-from dash import html
+from components import alert, datePicker, se_display
+from process_time import process_time
 
 options = dict(loop=True, autoplay=True, rendererSettings=dict(preserveAspectRatio='xMidYMid slice'))
 dropdown_style = {
@@ -49,7 +49,7 @@ def serve_layout(first):
                         [
                             dbc.Row(
                                 [
-                                    datePicker.se_date_picker(), # live update
+                                    datePicker.date_picker("security"), # live update
                                     notification,
                                 ],
                             ),
@@ -142,7 +142,7 @@ def serve_layout(first):
 # 初始化 display or 按下 Update 按鈕的觸發事件
 @callback(
     [
-        Output('se-datetime-output', 'children'),
+        Output('security-datetime-output', 'children'),
         Output('total', 'children'),
         Output('level12', 'children'),
         Output('fail', 'children'),
@@ -151,11 +151,11 @@ def serve_layout(first):
         Output('graph-second-row', 'children'),
     ],
     [
-        Input('se-submit_date', 'n_clicks'),
+        Input('security-submit-date', 'n_clicks'),
         Input('seagentselect','value')
     ],
     [
-        State('se-datetime-picker', 'value')
+        State('security-datetime-picker', 'value')
     ]
 )
 

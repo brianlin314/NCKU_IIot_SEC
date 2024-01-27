@@ -22,14 +22,12 @@ def change_permission(dir_path, sudoPassword):
     path = '/'.join(paths[:3])
     try:
         if oct(os.stat(path).st_mode)[-3:] == '777':
-            print(path, 'is already 777')
             return
         else:
             cmd = f"sudo chmod 777 -R {path}"
             subprocess.run(['sudo', '-S', *cmd.split()], input=sudoPassword.encode(), check=True)
             return
     except:
-        print(path, 'Permission denied')
         return
 
 def unzip(dir_path, sudoPassword):

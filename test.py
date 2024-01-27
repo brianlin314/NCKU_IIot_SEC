@@ -7,7 +7,6 @@ def change_wazuh_permission(dir_path, sudoPassword):
     path = '/'.join(paths[:3])
     try:
         if oct(os.stat(path).st_mode)[-3:] == '777':
-            print(path, 'is already 777')
             return
         else:
             cmd = f"sudo chmod 777 -R {path}"
@@ -20,4 +19,3 @@ def change_wazuh_permission(dir_path, sudoPassword):
 if __name__ == '__main__':
     change_wazuh_permission('/var/ossec/logs/alerts', 'ncku')
     config = get_config.get_variable()
-    print("get_config:", config["sudoPassword"])

@@ -1,13 +1,15 @@
-import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
-from dash import dcc, callback, dash_table
-from dash import html
-import pandas as pd
-import globals_variable
-from datetime import date
-import dash
-from database import get_db
 import re
+from datetime import date
+
+import dash
+import dash_bootstrap_components as dbc
+import pandas as pd
+from dash import callback, dash_table, dcc, html
+from dash.dependencies import Input, Output
+
+import globals_variable
+from database import get_db
+
 table_style = {
     "margin-left": "1rem",
     "margin-right": "1rem",

@@ -51,7 +51,7 @@ def serve_layout(first):
                         [
                             dbc.Row(
                                 [
-                                    datePicker.discover_date_picker(),   # live update, 調整時間
+                                    datePicker.date_picker("discover"),   # live update, 調整時間
                                     notification
                                 ],
                             ),
@@ -83,18 +83,18 @@ def serve_layout(first):
 # 初始化 display or 按下 Update 按鈕的觸發事件 or 利用 fields_btn 來動態 update display
 @callback(
     [
-        Output('datetime-output', 'children'),
+        Output('discover-datetime-output', 'children'),
         Output('dataNum', 'children'),
         Output("graph-and-table", "children"),
     ],
     [
-        Input('submit_date', 'n_clicks'), # update按鈕
+        Input('discover-submit-date', 'n_clicks'), # update按鈕
         Input({'type': 'add_btn', 'index': ALL}, 'n_clicks'), # selected field 新增或刪除，選擇後會立刻更改
         Input({'type': 'del_btn', 'index': ALL}, 'n_clicks'),  # selected field 新增或刪除，選擇後會立刻更改
         Input('dagentselect', 'value'),
     ],
     [
-        State('datetime-picker', 'value'), # 時間算在state，當input value出去後會跟著改變
+        State('discover-datetime-picker', 'value'), # 時間算在state，當input value出去後會跟著改變
     ]
 )
 def update(n_clicks, add_btn, del_btns, value, time): # dagentselect, 參數必須照input順序填入

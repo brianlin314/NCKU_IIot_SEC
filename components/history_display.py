@@ -1,20 +1,17 @@
-import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
-from dash import dcc, callback, dash_table
-from dash import html
-import pandas as pd
-import globals_variable
-from components.se_display import CONFIG
 import datetime
-import time
 import re
+import time
+
+import dash_bootstrap_components as dbc
+import pandas as pd
+from dash import callback, dash_table, dcc, html
+from dash.dependencies import Input, Output
+
+import globals_variable
 from database import get_db
-global CONFIG
 
-BAR_STYLE = {'zIndex':1} #'border':'1px black solid', 
 
-def update(startDate, endDate, freqs, ip):
-    global CONFIG
+def data_process(startDate, endDate, ip):
     dateFormat = "%Y-%m-%dT%H:%M:%S.%f%z"
     starttime = datetime.datetime.strptime(startDate, dateFormat).strftime("%H:%M:%S")
     endtime = datetime.datetime.strptime(endDate, dateFormat).strftime("%H:%M:%S")
@@ -23,7 +20,6 @@ def update(startDate, endDate, freqs, ip):
 
     nidsjson = get_db.connect_db('nids')
     escaped_ip = re.escape(ip)
-    print(startDate, endDate)
     query = {
         '$or': [
             {'$and': [
@@ -49,6 +45,11 @@ def update(startDate, endDate, freqs, ip):
     df = pd.DataFrame(data)
     df = df.drop(columns = '_id')
     all_cols = list(df.columns)
+
+    return df, all_cols
+
+def update(startDate, endDate, ip):
+    df, all_cols = data_process(startDate, endDate, ip)
 
     table = dash_table.DataTable(
         virtualization = True,
@@ -99,7 +100,7 @@ def update(startDate, endDate, freqs, ip):
         table,
     ]
 
-    return [f'從 {startDate} 到 {endDate}', display]
+    return ["", display]
 
 @callback(
     Output('hdash-table', 'style_data_conditional'),

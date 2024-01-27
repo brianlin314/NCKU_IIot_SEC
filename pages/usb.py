@@ -1,13 +1,13 @@
+from datetime import date
+
+import dash
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
-import dash
-from dash_extensions import Lottie
-from dash import dcc, callback
-from dash.dependencies import Input, Output, State, ALL
-from datetime import date
-from dash import html
-
 import pandas as pd
+from dash import callback, dcc, html
+from dash.dependencies import ALL, Input, Output, State
+from dash_extensions import Lottie
+
 import globals_variable
 from components import usblog_display
 

@@ -1,14 +1,15 @@
-import dash_bootstrap_components as dbc
-from dash import dcc, callback
-from dash.dependencies import Input, Output, State, ALL
-import feffery_antd_components as fac
-import dash
-import pandas as pd
 from datetime import date
-from dash import html
+
+import dash
+import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
+import pandas as pd
+from dash import callback, dcc, html
+from dash.dependencies import ALL, Input, Output, State
 
 import globals_variable
 from components import nids_logtojson, nidslog_display
+
 # components
 
 dropdown_style = {
@@ -80,4 +81,4 @@ def update(value):
     try:
         return nidslog_display.update(globals_variable.agent_ip[value])
     except:
-        return dash.no_update
+        return ""

@@ -53,7 +53,6 @@ def get_current_nidsdb(dir_path, sudoPassword):
         num = create_db.createnidsDB(nidsjson, dir_path, sudoPassword)
         print("add",num,'DATA')
     else:
-        print("updating.....................")
         num = update_db.update_nidsdb(nidsjson, dir_path, sudoPassword)
         print("update",num,'DATA')
     return client, nidsjson, num, current_db
@@ -79,36 +78,6 @@ def get_current_aidb(dir_path, sudoPassword):
     else:
         num = create_db.createaiDB(airesult, dir_path, sudoPassword)
     return client, airesult, num, current_db
-
-# def connect_db():
-#     with open('config.json', 'r') as f:
-#         config = json.load(f)
-#         mongoUrl = config['mongoUrl']
-
-#     client = MongoClient(mongoUrl)
-#     db = client['pythondb']
-#     posts = db.posts
-#     return posts
-
-def connect_nidsdb():
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-        mongoUrl = config['mongoUrl']
-
-    client = MongoClient(mongoUrl)
-    db = client['pythondb']
-    nidsjson = db.nidsjson
-    return nidsjson
-
-def connect_aidb():
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-        mongoUrl = config['mongoUrl']
-
-    client = MongoClient(mongoUrl)
-    db = client['pythondb']
-    airesult = db.airesult
-    return airesult
 
 def connect_db(collection_name):
     with open('config.json', 'r') as f:

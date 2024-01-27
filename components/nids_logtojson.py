@@ -1,5 +1,7 @@
 import json
 import re
+
+
 # 把 NIDS 的 log 轉成 json
 def log2json(filename):
     f = open(filename, 'r')

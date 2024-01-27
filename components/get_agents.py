@@ -1,29 +1,27 @@
-from subprocess import Popen, PIPE
-import get_config
-from dash import dash_table
-import pandas as pd
+import subprocess
 import time
-from dash import html
-import feffery_antd_components as fac 
+
+import feffery_antd_components as fac
+import pandas as pd
+from dash import dash_table, html
+
+import get_config
+
 
 def process():
     config = get_config.get_variable()
-    sudo_password = "echo "+ config.sudoPassword+"\n"
-    command = 'cd /var/ossec/bin\n'
-    cmd2 = './agent_control -l\n'
-    p = Popen('sudo -s\n', shell= True, stdin=PIPE,  stdout=PIPE)
-    time.sleep(1)
-    p.stdin.write(sudo_password .encode())
-    p.stdin.write(command.encode())
-    p.stdin.write(cmd2.encode())
-    p.stdin.close()
-    # while True:
-    result_str = p.stdout.readlines()
+    sudo_password = config['sudoPassword']
+    cmd = '/var/ossec/bin/agent_control -l'
+
+    sudo_password_with_newline = sudo_password + '\n'
+
+    result = subprocess.run(['sudo', '-S', *cmd.split()], input=sudo_password_with_newline, text=True, check=True, capture_output=True)
+    result_str = result.stdout.split('\n')
+    
 
     df = pd.DataFrame(columns=['ID','Name'])
 
     for line in result_str:
-        line = line.decode()
         line_split = line.strip().split(',')
         if len(line_split) == 4:
             id = line_split[0].strip().split(':')[1]

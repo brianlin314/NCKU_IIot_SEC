@@ -1,5 +1,5 @@
-from dash import html
 import dash_bootstrap_components as dbc
+from dash import html
 
 STYLE = { # 設定背景風格
     "transition": "margin-left .5s",

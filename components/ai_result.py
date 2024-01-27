@@ -1,14 +1,17 @@
-import cicflowmeter
 import os
-import pandas as pd
-import keras
-from keras.models import load_model
-import xgboost as xgb
-from xgboost import XGBClassifier
 import pickle
+
+import cicflowmeter
+import keras
 import numpy as np
+import pandas as pd
 import tensorflow as tf
+import xgboost as xgb
+from keras.models import load_model
+from xgboost import XGBClassifier
+
 import get_config
+
 
 def new_report(test_report):
     lists = os.listdir(test_report)     #列出目錄的下所有文件和文件夾保存到lists

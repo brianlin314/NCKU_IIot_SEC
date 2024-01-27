@@ -1,12 +1,12 @@
+import json
+from datetime import date
+
+import dash
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
-from dash import dash_table
 import pandas as pd
-import json
+from dash import dash_table, html
 from pandas import json_normalize
-from datetime import date
-import dash
-from dash import html
 
 from usb_data import usb
 

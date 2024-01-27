@@ -1,42 +1,23 @@
-import dash_bootstrap_components as dbc
-from dash import callback
-import feffery_antd_components as fac  
 import dash
+import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
+from dash import callback, html
 from dash.dependencies import Input, Output, State
-from dash import html
+
 import globals_variable
-import json
-import ast
 from components import get_agents
+import get_config
 
 STYLE = { # 設定背景風格
-    # "transition": "margin-left .5s",
     "position": "relative",
     "top": "1rem",
     "left": "15rem",
-    # # "margin-right": "1rem",
-    # "padding": "0rem 0rem",
     'zIndex':"auto",
 }
-
-# table_style = {
-#     "margin-right": "0.5rem",
-#     'width':'100%',
-#     'height':'500px',
-#     'minWidth': '100%',
-#     "position":"relative",
-#     "left":"0.5rem",
-#     "top":"2rem",
-    
-# }
-
 
 def serve_layout():
     layout = html.Div(
         [
-            ##############################
-            ##           Title          ##
-            ##############################
             fac.AntdRow(
                 [
                     html.Div(
@@ -54,9 +35,6 @@ def serve_layout():
                     ),
                 ]
             ),
-            ##############################
-            ##    User ID & Passwrd     ##
-            ##############################
             fac.AntdRow(
                 fac.AntdSpace(
                     [
@@ -158,11 +136,9 @@ def serve_layout():
 )
 
 def update(input_button_clicks, account, password): #第一個參數是Input的參數，第二個是State的參數,參數必須照順序填入
-    with open('./mng/manager.json') as json_file:
-        data = json.load(json_file)
-        for key, value in data.items():
-            if (account == key) and (password == value):
-                return get_agents.process() # Call from /components/get_agent.py, for read existing agent as json format
+    config = get_config.get_variable()
+    if (account == config['dash_user_name']) and (password == config['dash_user_password']):
+        return get_agents.process() # Call from /components/get_agent.py, for read existing agent as json format
     return html.P("Login Error!"), dash.no_update
             
 @callback(

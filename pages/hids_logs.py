@@ -1,21 +1,23 @@
+from datetime import date
+
+import dash
 import dash_bootstrap_components as dbc
-from dash import dcc, callback
-from dash.dependencies import Input, Output, State, ALL
 import feffery_antd_components as fac
 import pandas as pd
-from datetime import date
-from dash import html
+from dash import callback, dcc, html
+from dash.dependencies import ALL, Input, Output, State
 
 import globals_variable
 from components import hidslog_display
+
 # components
-hitNum = html.H1(
-    [
-        '載入資料中',
-        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
-    ],
-    style={'textAlign': 'center'}, id='dataNum'
-)
+# hitNum = html.H1(
+#     [
+#         '載入資料中',
+#         dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
+#     ],
+#     style={'textAlign': 'center'}, id='dataNum'
+# )
 
 
 dropdown_style = { # 設定背景風格
@@ -66,7 +68,9 @@ def serve_layout():
             html.Br(),
             dcc.Loading(
                 html.Div(
-                        id='htable'
+                    [
+                        dbc.Col(id='htable'),
+                    ],
                 ),style = table_style,
             )
         ],
@@ -81,5 +85,8 @@ def serve_layout():
 )
 
 def update(value):
-    id = globals_variable.agent_id[value]
-    return hidslog_display.update(id)
+    
+    try:
+        return hidslog_display.update(globals_variable.agent_id[value])
+    except:
+        return ""

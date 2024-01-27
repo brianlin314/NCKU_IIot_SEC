@@ -46,7 +46,6 @@ def initialize():
 
 def get_fields(posts):
     data = posts.find({}, {'_id':0})
-    print("get_fields:", data)
     df = pd.json_normalize(data)
     all_fields = list(df.columns)
     all_fields.remove('timestamp')

@@ -1,13 +1,12 @@
-import dash_bootstrap_components as dbc
 import dash
-from dash import dcc, callback
-from dash.dependencies import Input, Output, State
+import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
-from dash import html
+from dash import callback, dcc, html
+from dash.dependencies import Input, Output, State
 
-from process_time import process_time
-from components import datePicker, statistics_display
 import globals_variable
+from components import datePicker, statistics_display
+from process_time import process_time
 
 img_path = '../assets/img'
 dropdown_style = {
@@ -48,7 +47,7 @@ def serve_layout():
                         [
                             dbc.Row(
                                 [
-                                    datePicker.st_date_picker(), # live update
+                                    datePicker.date_picker("statistics"), # live update
                                 ],
                             ),
                             fac.AntdSelect(
@@ -112,18 +111,18 @@ def serve_layout():
 # 初始化 display or 按下 Update 按鈕的觸發事件
 @callback(
     [
-        Output('st-datetime-output', 'children'),
+        Output('statistics-datetime-output', 'children'),
         Output('sttotal', 'children'),
         Output('high-priority', 'children'),
         Output('stgraph-frist-row', 'children'),
         Output('stgraph-second-row', 'children')
     ],
     [
-        Input('st-submit_date', 'n_clicks'),
+        Input('statistics-submit-date', 'n_clicks'),
         Input('stagentselect','value')
     ],
     [
-        State('st-datetime-picker', 'value')
+        State('statistics-datetime-picker', 'value')
     ]
 )
 def update(n_clicks, value, time):
@@ -132,4 +131,4 @@ def update(n_clicks, value, time):
     try:
         return statistics_display.update(startDate, endDate, freqs, globals_variable.agent_ip[value])
     except:
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update
+        return "", "", "", "", ""

@@ -1,10 +1,10 @@
+from datetime import date
+
 import dash_bootstrap_components as dbc
-from dash import dcc, callback
-from dash.dependencies import Input, Output, State
 import feffery_antd_components as fac
 import pandas as pd
-from datetime import date
-from dash import html
+from dash import callback, dcc, html
+from dash.dependencies import Input, Output, State
 
 import globals_variable
 from components import ai_display

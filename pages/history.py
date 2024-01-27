@@ -1,13 +1,12 @@
-import dash_bootstrap_components as dbc
-from dash import dcc, callback
-from dash.dependencies import Input, Output, State
-import feffery_antd_components as fac
 import dash
-from dash import html
+import dash_bootstrap_components as dbc
+import feffery_antd_components as fac
+from dash import callback, dcc, html
+from dash.dependencies import Input, Output, State
 
 import globals_variable
-from process_time import process_time
 from components import datePicker, history_display
+from process_time import process_time
 
 dropdown_style = {
     "display":"inline-block",
@@ -17,25 +16,6 @@ dropdown_style = {
     "left":"1rem",
     "top":"1rem",
     "bottom":"2rem"
-}
-# components
-hitNum = html.H1(
-    [
-        '載入資料中',
-        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
-    ],
-    style={'textAlign': 'center'}, id='hdataNum'
-)
-
-DISPLAY_STYLE = {
-    "transition": "margin-left .5s",
-    "margin-top": 20,
-    "margin-right": 30,
-    "padding": "1rem 1rem",
-    "background-color": "#f8f9fa",
-    'fontSize': 12,
-    'width': '1px',
-    'zIndex':1,
 }
 
 STYLE = {
@@ -60,7 +40,7 @@ def serve_layout():
                         [
                             dbc.Row(
                                 [
-                                    datePicker.his_date_picker(),   # live update
+                                    datePicker.date_picker("history"),   # live update
                                 ],
                             ),
                             fac.AntdSelect(
@@ -87,21 +67,21 @@ def serve_layout():
 # 初始化 display or 按下 Update 按鈕的觸發事件 or 利用 fields_btn 來動態 update display
 @callback(
     [
-        Output('hdatetime-output', 'children'),
+        Output('history-datetime-output', 'children'),
         Output("hgraph-and-table", "children"),
     ],
     [
-        Input('hsubmit_date', 'n_clicks'),
+        Input('history-submit-date', 'n_clicks'),
         Input('hisagentselect', 'value'),
     ],
     [
-        State('hdatetime-picker', 'value'),
+        State('history-datetime-picker', 'value'),
     ]
 )
 def update(n_clicks, value, time): 
     # 將 time 轉成 timestamp format, 並得到 interval
-    startDate, endDate, freqs = process_time.get_time_info(time)
+    startDate, endDate, _ = process_time.get_time_info(time)
     try:
-        return history_display.update(startDate, endDate, freqs, globals_variable.agent_ip[value])
+        return history_display.update(startDate, endDate, globals_variable.agent_ip[value])
     except:
-        return dash.no_update, dash.no_update
+        return "", ""

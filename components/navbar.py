@@ -1,15 +1,13 @@
-from dash import html
 import dash_bootstrap_components as dbc
+from dash import html
 
 # 定義導航欄
-img_path = '../assets/img' # ../ 代表上一層目錄
-logo = f'{img_path}/logo.png' # 成功大學圖樣
-github = f'{img_path}/github1.png'
+logo = '../assets/img/logo.png' # 成功大學圖樣
+github = '../assets/img/github1.png'
 
 navbar = dbc.Navbar( 
     [
-        html.A( # A為連結功用
-            # 利用 row, col 來控制排版
+        html.A( 
             dbc.Row(
                 [
                     dbc.Col(html.Img(src = logo, height = "50px")), 

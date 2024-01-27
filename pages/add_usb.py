@@ -1,12 +1,13 @@
 import dash_bootstrap_components as dbc
-from dash import callback
-import feffery_antd_components as fac  
+import feffery_antd_components as fac
+from dash import callback, html
 from dash.dependencies import Input, Output, State
-from dash import html
-import globals_variable
 
-import ast
+import globals_variable
 from usb_data import cdbtxt2json
+import get_config
+import json
+import pandas as pd
 
 STYLE = { # 設定背景風格
     "transition": "margin-left .5s",
@@ -201,60 +202,47 @@ def serve_layout():
     prevent_initial_call=True # 防止每次都讀到None
 )
 
-def callback_usb(input_button_clicks, account, password, clickedKey, input_value, input_value_again): #第一個參數是Input的參數，第二個是State的參數,參數必須照順序填入
+def callback_usb(input_button_clicks, account, password, clickedKey, input_value, input_value_again):
     check=0
-    auth=open('./usb_data/manager.json','r')
-    lines=auth.readlines()
-    for line in lines:
-        line = ast.literal_eval(line)
-        if line['manager'] == account:
-            if line['password']==password:
-                if input_value == input_value_again:
-                    cdb_list=input_value+" "+clickedKey
-                    with open('./usb_data/cdb.txt', 'a') as f: #a代表append
-                        f.write(cdb_list)
-                        f.write('\n')
-                    f.close()
-                    cdbtxt2json.c2j()
-                    return [
-                        f'USB Serial Number = {input_value}',
-                        f'Agent = {clickedKey}',
-                        fac.AntdNotification(
-                        message='新增USB白名單通知',
-                        description='新增USB序列號: '+input_value+'  至Agent ID: '+clickedKey,
-                        type='success',
-                        placement = 'bottomRight')
-                    ]
-                elif input_value != input_value_again:
-                    return [
-                        f'USB Serial Number = {input_value}',
-                        f'Agent = {clickedKey}',
-                        fac.AntdNotification(
-                        message='USB白名單新增失敗',
-                        description='2次輸入之USB序列號不同',
-                        type='warning',
-                        placement = 'bottomRight')
-                    ]
-            elif line['password'] != password:
-                print("密碼輸錯!")
-                return [
-                        f'USB Serial Number = {input_value}',
-                        f'Agent = {clickedKey}',
-                        fac.AntdNotification(
-                        message='密碼輸入錯誤',
-                        description='提示:帳號密碼輸入錯誤',
-                        type='error',
-                        placement = 'bottomRight')
-                    ]
-        elif  line['manager'] != account:
-            check+=1
-    if check==len(lines):
-        print("check",check)
+    config = get_config.get_variable()
+    if config['dash_user_name'] == account and config['dash_user_password'] == password:
+        if input_value == input_value_again:
+            #read json file and write new one
+            f = open('./usb_data/usb_cdb.json', 'a+') #a代表append
+            try:
+                cdb_df = pd.DataFrame(json.loads(f.read()))
+            except:
+                cdb_df = pd.DataFrame(columns=['cdb_SN', 'Aid'])
+            new_info = {"cdb_SN": input_value, "Aid": clickedKey}
+            cdb_df = cdb_df.append(new_info, ignore_index=True)
+            f.write(cdb_df.to_json(orient='records', lines=True))
+            f.close()
+
+            return [
+                f'USB Serial Number = {input_value}',
+                f'Agent = {clickedKey}',
+                fac.AntdNotification(
+                message='新增USB白名單通知',
+                description='新增USB序列號: '+input_value+'  至Agent ID: '+clickedKey,
+                type='success',
+                placement = 'bottomRight')
+            ]
+        elif input_value != input_value_again:
+            return [
+                f'USB Serial Number = {input_value}',
+                f'Agent = {clickedKey}',
+                fac.AntdNotification(
+                message='USB白名單新增失敗',
+                description='2次輸入之USB序列號不同',
+                type='warning',
+                placement = 'bottomRight')
+            ]
+    else:
         return [
                 f'USB Serial Number = {input_value}',
                 f'Agent = {clickedKey}',
                 fac.AntdNotification(
-                message='查無此帳號',
+                message='帳號密碼輸入錯誤',
                 description='提示:帳號密碼輸入錯誤',
                 type='error',
                 placement = 'bottomRight')

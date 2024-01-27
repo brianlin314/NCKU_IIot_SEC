@@ -1,5 +1,5 @@
-from dash import html
 import feffery_antd_components as fac
+from dash import html
 
 # 定義左邊挑選欄位
 # the style arguments for the sidebar. We use position : fixed and a fixed width
@@ -165,16 +165,6 @@ sidebar = html.Div(
                                         }
                                     ]
                                 },
-                                # {
-                                #     'component': 'Item',
-                                #     'props': 
-                                #             {  
-                                #                 'key': '/Login',
-                                #                 'title': 'Login',
-                                #                 'icon': 'antd-deployment-unit',
-                                #                 'href': '/Login'
-                                #             }
-                                # },
                             ],
                             mode='inline'
                         )

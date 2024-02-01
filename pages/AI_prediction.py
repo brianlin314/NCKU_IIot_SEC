@@ -9,15 +9,6 @@ from dash.dependencies import Input, Output, State
 import globals_variable
 from components import ai_display
 
-# components
-hitNum = html.H1(
-    [
-        '載入資料中',
-        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
-    ],
-    style={'textAlign': 'center'}, id='dataNum'
-)
-
 dropdown_style = {
     "display":"inline-block",
     "fontSize":20,
@@ -85,5 +76,8 @@ def serve_layout():
 )
 
 def update(value):
-    ip = globals_variable.agent_ip[value]
-    return ai_display.update(ip)
+    try:
+        ip = globals_variable.agent_ip[value]
+        return ai_display.update(ip)
+    except:
+        return ""

@@ -8,11 +8,11 @@ import pandas as pd
 from dash import dash_table, html
 from pandas import json_normalize
 
-from usb_data import usb
+from usb_data import usb_identify
 
 
 def update(id):
-    usb.usbdf()
+    usb_identify.usbdf()
     #讀取json檔, 篩選今天的log內
     global df
     df = pd.read_json("./usb_data/usb_info.json")

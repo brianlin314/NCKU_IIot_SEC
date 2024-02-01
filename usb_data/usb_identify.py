@@ -9,8 +9,7 @@ def usbdf():
     usb_file = open('./usb_data/usb.json', 'w', newline='')
     cdb = open("./usb_data/usb_cdb.json","r")
     cdb_line = cdb.readlines()
-    cmd = 'sudo chmod  777 -R /var/ossec/logs/alerts/' # 更改wazuh 底下資料夾權限
-    with open("/var/ossec/logs/alerts/alerts.json","r") as jsonfiles:
+    with open("/var/ossec/logs/alerts/alerts.json", "r", encoding='utf-8') as jsonfiles:
         lines = jsonfiles.readlines()
         usb_detail = {}
         for line in lines:
@@ -35,10 +34,8 @@ def usbdf():
                     usb_detail["connected"] = 1
                     usb_detail["UsbPort"] = full_log[-3].strip(":")
                     port_state[usb_port] = usb_detail.copy()
-                    print(usb_port)
 
             if info["rule"]["id"] == '111000':
-                print("window detected!")
                 usb_detail["In_Date"] = info["timestamp"].split("T")[0]
                 usb_detail["In_Time"] = info["timestamp"].split("T")[1].split(".")[0]
                 usb_detail["Out_Date"] = '-'
@@ -57,7 +54,6 @@ def usbdf():
                 port_state[usb_port] = usb_detail.copy()
                 json.dump(port_state[usb_port], usb_file)
                 usb_file.write('\n')
-                print("window done!")
             
 
             if info["rule"]["id"]=='81102' and info["location"]=='/var/log/kern.log':
@@ -92,3 +88,6 @@ def usbdf():
     usb_info.write("]")
     usb_info.close()
     f.close()
+
+if __name__ == '__main__':
+    usbdf()

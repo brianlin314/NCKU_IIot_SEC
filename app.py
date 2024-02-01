@@ -15,9 +15,12 @@ from flask import send_from_directory, session
 from components import navbar, hide_sidebar
 from pages import login, home, discover, security_events, non_exist, hids_logs, nids_logs, AI_prediction, usb, add_agents, add_usb, history, statistics
 
+from components.autoencoder_model import AutoEncoder
+
 warnings.filterwarnings("ignore", category=Warning) # 忽略匹配的警告
 server = Flask(__name__)
 app = dash.Dash(__name__, server=server, suppress_callback_exceptions=True)
+
 globals_variable.default() # 初始化全域變數，只在重啟Dash的時候會呼叫
 
 ###########################
@@ -132,9 +135,3 @@ def serving_lottie_success():
 
 if __name__ == '__main__':
     app.run_server(debug=True) # 每次更新時都可以直接查看網頁，而不用重新執行py
-    # pid = os.fork()
-    # if pid != 0:
-    #     app.run_server()
-    # else:
-    #     url = "http://127.0.0.1:8050/"
-    #     webbrowser.open(url)

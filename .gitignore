@@ -9,4 +9,5 @@ usb_data/__pycache__/
 wirepcap/pcap/
 
 *.pkl
+*.json
 

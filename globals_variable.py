@@ -26,7 +26,7 @@ def default():
         {'label':'PC_2','value':'002'},
         {'label':'PC_3','value':'003'},
     ]
-    agent_ip = {'Server' : '192.168.65.7', 'PCs' : '210.61.41.223'}
+    agent_ip = {'Server' : '192.168.65.7', 'PCs' : '140.116.82.52'}
     agent_id = {'Server' : '000', 'PC_1' : '001', 'PC_2' : '002', 'PC_3' : '003'}
     
 def initialize():
@@ -40,7 +40,7 @@ def initialize():
     n_selected_fields = []
     _, posts, num, current_db, = get_db.get_current_db(dir_path, sudoPassword)
     _, nidsjson, n_num, current_nids_db, = get_db.get_current_nidsdb(nidsdirpath , sudoPassword)
-    # _, airesult, ai_num, current_ai_db, = get_db.get_current_aidb(pcapdirpath , sudoPassword)
+    _, airesult, ai_num, current_ai_db, = get_db.get_current_aidb(pcapdirpath , sudoPassword)
     all_fields, fields_num = get_fields(posts)
     add_next_click = [1 for i in range(fields_num)]
 

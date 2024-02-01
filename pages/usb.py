@@ -11,15 +11,7 @@ from dash_extensions import Lottie
 import globals_variable
 from components import usblog_display
 
-# components
-img_path = './assets/img'
-hitNum = html.H1(
-    [
-        '載入資料中',
-        dbc.Spinner(size="lg", spinner_style={'margin-left': '15px', 'width': '40px', 'height': '40px'}),
-    ],
-    style={'textAlign': 'center'}, id='dataNum'
-)
+
 
 COL_STYLE = {
    'width': 3,
@@ -83,7 +75,7 @@ def serve_layout():
                             dbc.Col(
                                 dbc.Card(
                                     [
-                                        dbc.CardHeader(html.Img(src = f'{img_path}/check.png', height = "50px")),
+                                        dbc.CardHeader(html.Img(src = './assets/img/check.png', height = "50px")),
                                         dbc.CardBody(
                                             [
                                                 html.H4('Authorized Using USB'),
@@ -97,7 +89,7 @@ def serve_layout():
                             dbc.Col(
                                 dbc.Card(
                                     [
-                                        dbc.CardHeader(html.Img(src = f'{img_path}/warning.png', height = "50px")),
+                                        dbc.CardHeader(html.Img(src = './assets/img/warning.png', height = "50px")),
                                         dbc.CardBody(
                                             [
                                                 html.H4('Unauthorized Using USB'),
@@ -111,7 +103,7 @@ def serve_layout():
                             dbc.Col(
                                 dbc.Card(
                                     [
-                                        dbc.CardHeader(html.Img(src = f'{img_path}/usb-port.png', height = "50px")),
+                                        dbc.CardHeader(html.Img(src = './assets/img/usb-port.png', height = "50px")),
                                         dbc.CardBody(
                                             [
                                                 html.H4('Total Using Port'),
@@ -151,4 +143,4 @@ def update(value):
     try:
         return usblog_display.update(globals_variable.agent_id[value])
     except:
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update
+        return "", "", "", ""

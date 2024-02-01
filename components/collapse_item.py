@@ -86,7 +86,6 @@ def update(add_clicks, del_clicks, id):
     else:
         try:
             globals_variable.selected_fields.remove(globals_variable.all_fields[field_idx])
-            # print(selected_fields)
         except:
             pass
         return [True, True, False, False]

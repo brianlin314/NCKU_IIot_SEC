@@ -27,10 +27,11 @@ def get_current_db(dir_path, sudoPassword):
     posts = db.posts
 
     if db.posts.count_documents({}) == 0:
-        print("creating.....................current_db")
         num = create_db.createDB(posts, dir_path, sudoPassword)
+        print("HIDS add ", num, ' DATA') 
     else:
         num = update_db.update_db(posts, dir_path, sudoPassword)
+        print("HIDS update ", num, ' DATA') 
     return client, posts, num, current_db
 
 def get_current_nidsdb(dir_path, sudoPassword):
@@ -46,23 +47,18 @@ def get_current_nidsdb(dir_path, sudoPassword):
     client = MongoClient(mongoUrl)
     db = client['pythondb']
     current_db = db.list_collection_names()
-    # current_db = 'empty'
     nidsjson = db.nidsjson
     
     if db.nidsjson.count_documents({}) == 0:
         num = create_db.createnidsDB(nidsjson, dir_path, sudoPassword)
-        print("add",num,'DATA')
+        print("NIDS add ", num, ' DATA')
     else:
         num = update_db.update_nidsdb(nidsjson, dir_path, sudoPassword)
-        print("update",num,'DATA')
+        print("NIDS update ", num, ' DATA')
     return client, nidsjson, num, current_db
 
 
 def get_current_aidb(dir_path, sudoPassword):
-    # 當 last_date.pkl 不存在時(更新版本), 刪除 DB 
-    # if not os.path.isfile('./last_nids_num.pkl'):
-    #     del_db.delete()
-
     with open('config.json', 'r') as f:
         config = json.load(f)
         mongoUrl = config['mongoUrl']
@@ -74,9 +70,11 @@ def get_current_aidb(dir_path, sudoPassword):
     airesult = db.airesult
 
     if db.airesult.count_documents({}) == 0:
-        num = create_db.createaiDB(airesult, dir_path, sudoPassword)
+        num = create_db.createaiDB(airesult, dir_path)
+        print("AIIDS add ", num, ' DATA')
     else:
-        num = create_db.createaiDB(airesult, dir_path, sudoPassword)
+        num = create_db.createaiDB(airesult, dir_path)
+        print("AIIDS update ", num, ' DATA')
     return client, airesult, num, current_db
 
 def connect_db(collection_name):

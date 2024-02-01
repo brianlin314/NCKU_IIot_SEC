@@ -8,7 +8,7 @@
     "nidsdirpath": "/var/log/suricata/",
     "pcapdirpath": "./wirepcap/pcap/",
     "csvdirpath": "./wirepcap/csv/",
-    "model_path": "cic_xgboost.bin",
+    "model_path": "./anomaly_AE_new.pth",
     "nids_agent_options": [
         {"label": "Server", "value": "Server"},
         {"label": "PCs", "value": "PCs"}

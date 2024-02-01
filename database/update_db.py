@@ -2,8 +2,10 @@ import json
 import pickle as pkl
 from datetime import datetime, timedelta
 from itertools import islice
-from database import create_db, get_db
+
 from components import nids_logtojson
+from database import create_db, get_db
+
 
 # generator
 def gen_dates(start, days):

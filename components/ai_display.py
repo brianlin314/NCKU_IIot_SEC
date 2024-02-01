@@ -7,32 +7,19 @@ import pandas as pd
 from dash import callback, dash_table, dcc, html
 from dash.dependencies import Input, Output
 
-import globals_variable
 from database import get_db
 
-table_style = {
-    "margin-left": "1rem",
-    "margin-right": "1rem",
-    "position":"relative",
-    "left":"0.5rem",
-    "top":"2rem",
-    'fontsize':12,
-}
-
 def update(ip):
-    ai_result = get_db.connect_aidb()
-    global df
+    ai_result = get_db.connect_db("ai")
     today = date.today()
     today = today.strftime("%Y-%m-%d")
 
     escaped_ip = re.escape(ip)
     query = {
-        '$and': [
-            {'Date': {'$eq': today}},
-            {'$or': [
-                {'src_ip': {'$regex': f'^{escaped_ip}'}},
-                {'dst_ip': {'$regex': f'^{escaped_ip}'}}
-            ]}
+        'timestamp': {'$regex': f'^{today}'},
+        '$or': [
+            {'src_ip': {'$regex': f'^{escaped_ip}'}},
+            {'dst_ip': {'$regex': f'^{escaped_ip}'}}
         ]
     }
     data = list(ai_result.find(query))
@@ -40,7 +27,7 @@ def update(ip):
         return html.H4("目前沒有資料")
     df = pd.DataFrame(data)
     df = df.drop(columns = '_id')
-    df = df[['Date', 'Time', 'pred_label', 'src_ip', 'dst_ip', 'src_port', 'dst_port', 'protocol']]
+    # df = df[['Date', 'Time', 'pred_label', 'src_ip', 'dst_ip', 'src_port', 'dst_port', 'protocol']]
 
     all_cols = list(df.columns)
     
@@ -73,8 +60,7 @@ def update(ip):
         style_data_conditional=[
         {
             'if': {
-                'filter_query': '{pred_label} >= 1',
-                'column_id': 'pred_label'
+                'filter_query': '{predict_label} eq "anomaly"'
             },
             'backgroundColor': '#FD4000',
             'color': 'white'

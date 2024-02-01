@@ -1,16 +1,48 @@
-import os
-import json
 import glob
+import json
+import os
 import pickle as pkl
-from components import nids_logtojson, ai_result
-from itertools import islice
-import get_config
-import tensorflow as tf
-import xgboost as xgb
-import pandas as pd
-import numpy as np
-from datetime import datetime
 import subprocess
+from datetime import datetime
+
+import numpy as np
+import pandas as pd
+import torch
+from pymongo import MongoClient
+from sklearn.preprocessing import MinMaxScaler
+from torch import nn
+from torch.utils.data import DataLoader, Dataset
+import get_config
+from components import nids_logtojson
+from components.autoencoder_model import AutoEncoder
+# class AutoEncoder(nn.Module):
+#     def __init__(self, f_in):
+#         super().__init__()
+
+#         self.encoder = nn.Sequential(
+#             nn.Linear(f_in, 100),
+#             nn.Tanh(),
+#             nn.Dropout(0.2),
+#             nn.Linear(100, 70),
+#             nn.Tanh(),
+#             nn.Dropout(0.2),
+#             nn.Linear(70, 40)
+#         )
+#         self.decoder = nn.Sequential(
+#             nn.ReLU(inplace=True),
+#             nn.Linear(40, 40),
+#             nn.Tanh(),
+#             nn.Dropout(0.2),
+#             nn.Linear(40, 70),
+#             nn.Tanh(),
+#             nn.Dropout(0.2),
+#             nn.Linear(70, f_in)
+#         )
+
+#     def forward(self, x):
+#         x = self.encoder(x)
+#         x = self.decoder(x)
+#         return x
 
 def record_last(last_date_info):
     file = open('last_date.pkl', 'wb')
@@ -86,13 +118,21 @@ def createDB(database, dir_path, sudoPassword):
                     error_file = json_files[i]
                 data += json_lines
     try:
-        print("createDB:", data)
         database.insert_many(data) # insert data into mongoDB
     except:
         print(f'重新 insert {error_file}')
         f = open(error_file, 'r', errors='replace')
         lines = f.readlines()
         json_lines = [json.loads(line) for line in lines]
+        # json_lines = []
+        # for line in lines:
+        #     # 檢查 line 是否為空
+        #     if line.strip():
+        #         try:
+        #             json_data = json.loads(line)
+        #             json_lines.append(json_data)
+        #         except json.decoder.JSONDecodeError as e:
+        #             print(f"Error decoding JSON: {e}. Skipping line.")
         num += len(lines)
         database.insert_many(json_lines)
     return num
@@ -154,81 +194,79 @@ def createnidsDB(database, dir_path, sudoPassword):
         database.insert_many(log_lines)
     return num
 
-def createaiDB(database, dir_path, sudoPassword):
+def filter_and_sort_pcap(directory_path, min_size_mb=9):
+    # 取得目錄中所有檔案
+    files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+
+    # 過濾並排序檔案
+    filtered_files = [f for f in files if os.path.getsize(os.path.join(directory_path, f)) > min_size_mb * 1024 * 1024]
+    sorted_files = sorted(filtered_files)
+
+    return sorted_files
+
+def pcap_to_csv(dir_path, pcap):
     config = get_config.get_variable()
-    # 更改目錄存取權限
-    change_permission(dir_path, sudoPassword)
-    lists = os.listdir(dir_path)     #列出目錄的下所有文件和文件夾保存到lists
+    cmd = f"cicflowmeter -f {dir_path}{pcap} -c {config['csvdirpath']}{pcap}.csv"
+    os.system(cmd)
 
-    q_list = []
-    for pcap in lists:
-        if os.path.getsize(dir_path+pcap) >= 50000000:
-            q_list.append(pcap)
-    q_list.sort(key=lambda fn:os.path.getmtime(dir_path + fn)) #按時間排序
+def AEpredict(file_name, model_path, threshold=0.05, batch_size=32):
+    df = pd.read_csv(file_name)
+    df = df.drop(['timestamp', 'src_ip', 'dst_ip'], axis=1)
+    cleaned_df = df.dropna()
+    cleaned_df.isna().sum().to_numpy()
 
-    num = 0
-    error_file = ''
-    # log_files = []
+    cleaned_df = cleaned_df.to_numpy()
+    dataset = MinMaxScaler().fit_transform(cleaned_df)
+    data = torch.tensor(dataset, dtype=torch.float32)
 
-    for i, pcap in enumerate(q_list):
+    data_loader = DataLoader(data, batch_size=batch_size, shuffle=False)
+    
+    model = AutoEncoder(79)  # 確保 input_size 和 hidden_size 與模型訓練時相同
+    model = torch.load("/home/ncku/Desktop/NCKU_IIot_SEC/anomaly_AE_new.pth", map_location=torch.device('cpu'))
+    model.cpu()
+    model.eval()
+
+    reconstruction_errors = []
+    with torch.no_grad():
+        for data in data_loader:
+            inputs = data.cpu()
+            outputs = model(inputs)
+            error = torch.mean(torch.square(outputs - inputs), dim=1)
+            reconstruction_errors.extend(error.cpu().numpy())
+    
+    anomalies = [idx for idx, error in enumerate(reconstruction_errors) if error > threshold]
+
+    return anomalies
+
+def mark_anomalies(file_name, anomalies):
+    df = pd.read_csv(file_name)
+    df['predict_label'] = 'normal'  # 假設所有資料默認為正常
+
+    # 將被標記為異常的資料行的 'predict_label' 設為 'anomaly'
+    df.loc[anomalies, 'predict_label'] = 'anomaly'
+
+    return df
+
+def createaiDB(database, dir_path):
+    config = get_config.get_variable()
+
+    files = filter_and_sort_pcap(dir_path)
+
+    for i, pcap in enumerate(files):
         data = []
-        if not os.path.isfile(config["csvdirpath"]+pcap+'.csv'):
-            cmd = f"cicflowmeter -f {dir_path+pcap} -c {config['csvdirpath']}{pcap}.csv" # 將pcap通過cic-flowmeter轉成csv
-            os.system(cmd) # 將指令給os執行
-        with tf.device('/cpu:0'): # cpu運行
-            model = xgb.Booster()
-            model.load_model(config["model_path"])
-        file = pd.read_csv(config["csvdirpath"]+pcap+'.csv')
-        df_list = []
-        df_list.append(file)
-
-        df = pd.concat(df_list, axis=0, ignore_index=True)
-        if len(df) == 0: # 若df沒資料，回傳0
-            return 0
-        del df_list
-
-        cleaned_data = df.dropna()
-        del df
-
-        X_test = cleaned_data.drop(columns = ["src_ip","dst_ip","src_port","timestamp", "protocol","psh_flag_cnt","init_fwd_win_byts","flow_byts_s","flow_pkts_s"], axis=1)
-        X_test = X_test.iloc[:, :].values
-        X_test = X_test.tolist()
-        print('model is analyzing...')
-        result = model.predict(xgb.DMatrix(X_test))
-        result = np.array(result)
-        pred_label=[[] for i in range(len(result))]
-        result=result.tolist()
-        for i in range(len(result)):
-            pred_label[i]=result[i].index(max(result[i]))
-        result=np.array(result)
-
-        cleaned_data['pred_label'] = pred_label
-        cleaned_data[['Date','Time']] = cleaned_data['timestamp'].str.split(' ', expand = True)
-        cleaned_data = cleaned_data.drop(columns= ["timestamp", 'flow_duration', 'flow_byts_s', 'flow_pkts_s', 'fwd_pkts_s', 'bwd_pkts_s', 'tot_fwd_pkts', 'tot_bwd_pkts', 'totlen_fwd_pkts', 'totlen_bwd_pkts', 'fwd_pkt_len_max', 'fwd_pkt_len_min', 'fwd_pkt_len_mean', 'fwd_pkt_len_std', 'bwd_pkt_len_max', 'bwd_pkt_len_min', 'bwd_pkt_len_mean', 'bwd_pkt_len_std', 'pkt_len_max', 'pkt_len_min', 'pkt_len_mean', 'pkt_len_std', 'pkt_len_var', 'fwd_header_len', 'bwd_header_len', 'fwd_seg_size_min', 'fwd_act_data_pkts', 'flow_iat_mean', 'flow_iat_max', 'flow_iat_min', 'flow_iat_std', 'fwd_iat_tot', 'fwd_iat_max', 'fwd_iat_min', 'fwd_iat_mean', 'fwd_iat_std', 'bwd_iat_tot', 'bwd_iat_max', 'bwd_iat_min', 'bwd_iat_mean', 'bwd_iat_std', 'fwd_psh_flags', 'bwd_psh_flags', 'fwd_urg_flags', 'bwd_urg_flags', 'fin_flag_cnt', 'syn_flag_cnt', 'rst_flag_cnt', 'psh_flag_cnt', 'ack_flag_cnt', 'urg_flag_cnt', 'ece_flag_cnt', 'down_up_ratio', 'pkt_size_avg', 'init_fwd_win_byts', 'init_bwd_win_byts', 'active_max', 'active_min', 'active_mean', 'active_std', 'idle_max', 'idle_min', 'idle_mean', 'idle_std', 'fwd_byts_b_avg', 'fwd_pkts_b_avg', 'bwd_byts_b_avg', 'bwd_pkts_b_avg', 'fwd_blk_rate_avg', 'bwd_blk_rate_avg', 'fwd_seg_size_avg', 'bwd_seg_size_avg', 'cwe_flag_count', 'subflow_fwd_pkts', 'subflow_bwd_pkts', 'subflow_fwd_byts', 'subflow_bwd_byts'])
-
-        #p.s釋放空間
-        del X_test
-        del result
-        del pred_label
-
-        try:
-            airesultline = cleaned_data.to_dict('records')
-        except:
-            print('轉dictionary失敗')
-
-        data += airesultline
-        print(f'{pcap} 有 {len(airesultline)} 筆資料')
+        pcap_to_csv(dir_path, pcap)
+        
+        anomaly_indices = AEpredict(config["csvdirpath"] + pcap + '.csv', config["model_path"])
+        df_with_labels = mark_anomalies(config["csvdirpath"] + pcap + '.csv', anomaly_indices)
+        data += df_with_labels.to_dict('records')
         try:
             database.insert_many(data) # insert data into mongoDB
-        except:
-            print(f'insert failed')
-
-        try:
-            cmd2 = f"rm {dir_path+pcap}"
-            cmd3 = f"rm {config['csvdirpath']}{pcap}.csv"
+            cmd1 = f"rm {dir_path + pcap}"
+            cmd2 = f"rm {config['csvdirpath']}{pcap}.csv"
+            os.system(cmd1)# model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
             os.system(cmd2)
-            os.system(cmd3)
-            num += 1
-        except:
-            print("刪除檔案失敗")
-    return num
+        except Exception as e:
+            print(e)
+    
+    return len(files)
+            

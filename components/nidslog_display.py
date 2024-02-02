@@ -5,9 +5,8 @@ from datetime import date
 import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
-from dash import callback, dash_table, dcc, html
-
 from components import nids_logtojson
+from dash import callback, dash_table, dcc, html
 from database import get_db
 
 

@@ -1,9 +1,8 @@
 import json
 import os
 
-from pymongo import MongoClient
-
 from database import create_db, del_db, update_db
+from pymongo import MongoClient
 
 
 def get_current_db(dir_path, sudoPassword):

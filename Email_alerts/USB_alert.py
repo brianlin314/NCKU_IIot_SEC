@@ -1,11 +1,11 @@
-import json
-from time import sleep
 import ast
+import json
+import smtplib
+import socket
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
-import smtplib
-import socket
+from time import sleep
 
 # 去讀wazuh log檔，找出目前有多少usb插在端點上，且列出詳細資訊
 

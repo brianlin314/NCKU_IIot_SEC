@@ -2,12 +2,11 @@ from datetime import date
 
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
+import globals_variable
 import pandas as pd
+from components import ai_display
 from dash import callback, dcc, html
 from dash.dependencies import Input, Output, State
-
-import globals_variable
-from components import ai_display
 
 dropdown_style = {
     "display":"inline-block",

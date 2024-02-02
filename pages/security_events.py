@@ -1,12 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
+import globals_variable
+from components import alert, datePicker, se_display
 from dash import callback, dcc, html
 from dash.dependencies import Input, Output, State
 from dash_extensions import Lottie
-
-import globals_variable
-from components import alert, datePicker, se_display
 from process_time import process_time
 
 options = dict(loop=True, autoplay=True, rendererSettings=dict(preserveAspectRatio='xMidYMid slice'))

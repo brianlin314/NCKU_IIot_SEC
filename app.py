@@ -1,21 +1,23 @@
 ##########################
 ##       引用外部套件    ##
 ##########################
-import warnings, os, globals_variable
-import dash
+import os
+import warnings
 import webbrowser
-from dash import dcc, html, callback
-from dash.dependencies import Input, Output, State
-from flask import Flask
-from flask import send_from_directory, session
 
+import dash
+import globals_variable
 ##########################
 ##       引用內部函式    ##
 ##########################
-from components import navbar, hide_sidebar
-from pages import login, home, discover, security_events, non_exist, hids_logs, nids_logs, AI_prediction, usb, add_agents, add_usb, history, statistics
-
+from components import hide_sidebar, navbar
 from components.autoencoder_model import AutoEncoder
+from dash import callback, dcc, html
+from dash.dependencies import Input, Output, State
+from flask import Flask, send_from_directory, session
+from pages import (AI_prediction, add_agents, add_usb, discover, hids_logs,
+                   history, home, login, nids_logs, non_exist, security_events,
+                   statistics, usb)
 
 warnings.filterwarnings("ignore", category=Warning) # 忽略匹配的警告
 server = Flask(__name__)

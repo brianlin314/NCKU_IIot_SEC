@@ -2,10 +2,9 @@ import subprocess
 import time
 
 import feffery_antd_components as fac
+import get_config
 import pandas as pd
 from dash import dash_table, html
-
-import get_config
 
 
 def process():

@@ -1,9 +1,9 @@
 import pandas as pd
 import plotly.express as px
-
-from plot import donut
 from database import get_db
+from plot import donut
 from process_time import process_time
+
 
 def update(startDate, endDate, freqs, selected_fields, id):
     # connect to database

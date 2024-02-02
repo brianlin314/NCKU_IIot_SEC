@@ -1,8 +1,8 @@
 import pandas as pd
 import plotly.express as px
-
 from database import get_db
 from process_time import process_time
+
 
 def update(startDate, endDate, col_name, freqs, title, id):
     interval_title = process_time.interval_title

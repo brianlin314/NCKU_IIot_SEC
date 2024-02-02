@@ -1,9 +1,10 @@
+import smtplib
 from datetime import datetime
-from time import sleep
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
-import smtplib
+from time import sleep
+
 
 # {'Date': '03/13/2023', 'Time': '15:16:21', 'Signature Id': '2210042', 'Rule Discription': 'SURICATA STREAM TIMEWAIT ACK with wrong seq', 
 # 'Classification': 'Generic Protocol Command Decode', 'Priority': '3', 'Protocol': 'TCP', 'Source': '20.42.72.131:443', 'Destination': '172.20.10.3:46468'}

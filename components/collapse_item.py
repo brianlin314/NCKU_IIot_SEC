@@ -1,9 +1,8 @@
 import dash_bootstrap_components as dbc
+import globals_variable
 import pandas as pd
 from dash import callback, html
 from dash.dependencies import MATCH, Input, Output
-
-import globals_variable
 
 field_style = {'margin-top':'7px', 'margin-left':'50px',"width": 150}
 add_btn_style = {'color':'green', 'fontSize':12,'margin-top':'4.98px', 'margin-bottom':'3px', 'align':'center', "width": 50}

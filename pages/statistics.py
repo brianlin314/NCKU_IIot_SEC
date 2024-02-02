@@ -1,11 +1,10 @@
 import dash
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
-from dash import callback, dcc, html
-from dash.dependencies import Input, Output, State
-
 import globals_variable
 from components import datePicker, statistics_display
+from dash import callback, dcc, html
+from dash.dependencies import Input, Output, State
 from process_time import process_time
 
 img_path = '../assets/img'

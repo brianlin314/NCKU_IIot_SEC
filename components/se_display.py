@@ -1,7 +1,6 @@
 import dash
 import dash_bootstrap_components as dbc
 from dash import dcc, html
-
 from database import get_db
 from plot import area, bar, donut
 

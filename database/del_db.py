@@ -1,6 +1,5 @@
-from pymongo import MongoClient
-
 import get_config
+from pymongo import MongoClient
 
 
 def delete():

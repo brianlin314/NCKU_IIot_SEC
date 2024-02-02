@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
-
 from database import get_db
+
 
 def calculate_cnt(startDate, endDate, col_name, id):
     # connect to database

@@ -1,4 +1,6 @@
 import json
+
+
 # 將txt的值轉換成json
 def c2j():
     cdbtxt=open("./usb_data/cdb.txt","r")

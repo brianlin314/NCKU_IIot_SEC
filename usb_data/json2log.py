@@ -1,5 +1,5 @@
+import json
 import logging
-import json 
 
 logging.basicConfig(filename='usb.log', level=logging.DEBUG)
 

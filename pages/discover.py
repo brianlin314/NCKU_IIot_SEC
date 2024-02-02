@@ -1,12 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc  # 引入外部套件
 import feffery_antd_components as fac
-from dash import callback, dcc, html
-from dash.dependencies import ALL, Input, Output, State
-
 import globals_variable  # 引用內部函式
 from components import (alert, collapse_item, datePicker, discover_display,
                         fields)
+from dash import callback, dcc, html
+from dash.dependencies import ALL, Input, Output, State
 from process_time import process_time
 
 dropdown_style = {

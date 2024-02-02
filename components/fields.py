@@ -1,7 +1,6 @@
 import dash_bootstrap_components as dbc
-from dash import html
-
 from components import collapse_item
+from dash import html
 
 FIELD_STYLE = {
     "transition": "margin-left .5s",

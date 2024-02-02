@@ -1,12 +1,11 @@
 import dash
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
-from dash import callback, html
-from dash.dependencies import Input, Output, State
-
+import get_config
 import globals_variable
 from components import get_agents
-import get_config
+from dash import callback, html
+from dash.dependencies import Input, Output, State
 
 STYLE = { # 設定背景風格
     "position": "relative",

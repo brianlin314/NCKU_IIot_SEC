@@ -1,16 +1,11 @@
+import get_config
 import pandas as pd
 from database import get_db
-import get_config
+
 
 def default():
     global usb_add_options, dir_path, agent_ip, agent_id, nids_agent_options, hids_agent_options
     config = get_config.get_variable()
-    # dir_path = '/var/ossec/logs/alerts'
-    # hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
-    # nidsdirpath = '/var/log/suricata/'  # nids存放路徑 不包含檔名
-    # pcapdirpath = './wirepcap/pcap/' 
-    # csvdirpath = './wirepcap/csv/' 
-    # model_path = 'cic_xgboost.bin'
     nids_agent_options = config["nids_agent_options"] # pages 底下的 agent 下拉式選單選項
     hids_agent_options = config["hids_agent_options"] # pages 底下的 agent 下拉式選單選項
     usb_add_options = config["usb_add_options"] # pages 底下的 agent 下拉式選單選項
@@ -28,6 +23,7 @@ def initialize():
     _, airesult, ai_num, current_ai_db, = get_db.get_current_aidb(config["pcapdirpath"] , config["sudoPassword"])
     all_fields, fields_num = get_fields(posts)
     add_next_click = [1 for i in range(fields_num)]
+    print("初始化完成，歡迎使用 Dashboard!")
 
 def get_fields(posts):
     data = posts.find({}, {'_id':0})

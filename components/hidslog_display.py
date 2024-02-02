@@ -5,7 +5,6 @@ import dash
 import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import dash_table, html
-
 from database import get_db
 
 

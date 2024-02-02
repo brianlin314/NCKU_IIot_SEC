@@ -1,6 +1,6 @@
+import ast
 import json
 from time import sleep
-import ast
 
 # 去讀wazuh log檔，找出目前有多少usb插在端點上，且列出詳細資訊
 

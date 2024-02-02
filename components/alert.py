@@ -1,6 +1,6 @@
 import dash_bootstrap_components as dbc
-
 import globals_variable
+
 
 def update_notification(first):
     if first == 1:

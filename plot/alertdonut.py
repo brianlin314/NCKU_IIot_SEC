@@ -1,5 +1,6 @@
 import plotly.graph_objects as go
 
+
 def calculate_cnt(startDate, endDate, ip):
     nids_logtojson.log2json(globals.nidsdirpath+"/fast.log")
 

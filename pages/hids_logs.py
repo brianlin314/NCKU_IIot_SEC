@@ -3,12 +3,11 @@ from datetime import date
 import dash
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
+import globals_variable
 import pandas as pd
+from components import hidslog_display
 from dash import callback, dcc, html
 from dash.dependencies import ALL, Input, Output, State
-
-import globals_variable
-from components import hidslog_display
 
 # components
 # hitNum = html.H1(

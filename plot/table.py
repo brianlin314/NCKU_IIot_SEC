@@ -1,9 +1,9 @@
 import pandas as pd
 import plotly.express as px
-
-from plot import donut
 from database import get_suricatadb
+from plot import donut
 from process_time import process_time
+
 
 def update(currentDate, freqs):
     posts = get_suricatadb.connect_db("hids")

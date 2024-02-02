@@ -7,7 +7,6 @@ import feffery_antd_components as fac
 import pandas as pd
 from dash import dash_table, html
 from pandas import json_normalize
-
 from usb_data import usb_identify
 
 

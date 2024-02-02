@@ -5,17 +5,17 @@ import pickle as pkl
 import subprocess
 from datetime import datetime
 
+import get_config
 import numpy as np
 import pandas as pd
 import torch
+from components import nids_logtojson
+from components.autoencoder_model import AutoEncoder
 from pymongo import MongoClient
 from sklearn.preprocessing import MinMaxScaler
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
-import get_config
-from components import nids_logtojson
-from components.autoencoder_model import AutoEncoder
-import get_config
+
 
 def record_last(last_date_info):
     file = open('last_date.pkl', 'wb')

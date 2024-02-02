@@ -3,15 +3,12 @@ from datetime import date
 import dash
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
+import globals_variable
 import pandas as pd
+from components import usblog_display
 from dash import callback, dcc, html
 from dash.dependencies import ALL, Input, Output, State
 from dash_extensions import Lottie
-
-import globals_variable
-from components import usblog_display
-
-
 
 COL_STYLE = {
    'width': 3,

@@ -1,13 +1,13 @@
+import json
+
 import dash_bootstrap_components as dbc
 import feffery_antd_components as fac
+import get_config
+import globals_variable
+import pandas as pd
 from dash import callback, html
 from dash.dependencies import Input, Output, State
-
-import globals_variable
 from usb_data import cdbtxt2json
-import get_config
-import json
-import pandas as pd
 
 STYLE = { # 設定背景風格
     "transition": "margin-left .5s",

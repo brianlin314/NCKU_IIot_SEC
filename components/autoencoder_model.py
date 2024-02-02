@@ -1,5 +1,6 @@
 from torch import nn
 
+
 class AutoEncoder(nn.Module):
     def __init__(self, f_in):
         super().__init__()

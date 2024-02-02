@@ -6,7 +6,6 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 from dash import callback, dash_table, dcc, html
 from dash.dependencies import Input, Output
-
 from database import get_db
 
 

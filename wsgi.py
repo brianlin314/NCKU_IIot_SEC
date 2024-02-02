@@ -1,5 +1,5 @@
-from waitress import serve
 from app import app
+from waitress import serve
 
 serve(
     app.server,

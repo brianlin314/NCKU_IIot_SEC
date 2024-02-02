@@ -7,7 +7,6 @@ import pandas as pd
 from dash import callback, dash_table, dcc, html
 from dash.dependencies import Input, Output
 
-import globals_variable
 from database import get_db
 
 

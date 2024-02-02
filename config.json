@@ -3,12 +3,11 @@
     "dash_user_name": "admin",
     "dash_user_password": "admin",
     "sudoPassword": "ncku",
-    "dir_path": "/var/ossec/logs/alerts",
     "hidsdirpath": "/var/ossec/logs/alerts/",
     "nidsdirpath": "/var/log/suricata/",
     "pcapdirpath": "./wirepcap/pcap/",
     "csvdirpath": "./wirepcap/csv/",
-    "model_path": "./anomaly_AE_new.pth",
+    "model_path": "anomaly_AE_new.pth",
     "nids_agent_options": [
         {"label": "Server", "value": "Server"},
         {"label": "PCs", "value": "PCs"}
@@ -26,7 +25,7 @@
         {"label": "PC_3", "value": "003"}
     ],
     "agent_ip": {
-        "Server": "210.61.41.228",
+        "Server": "140.116.82.52",
         "PCs": "210.61.41.223"
     },
     "agent_id": {

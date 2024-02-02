@@ -15,34 +15,7 @@ from torch.utils.data import DataLoader, Dataset
 import get_config
 from components import nids_logtojson
 from components.autoencoder_model import AutoEncoder
-# class AutoEncoder(nn.Module):
-#     def __init__(self, f_in):
-#         super().__init__()
-
-#         self.encoder = nn.Sequential(
-#             nn.Linear(f_in, 100),
-#             nn.Tanh(),
-#             nn.Dropout(0.2),
-#             nn.Linear(100, 70),
-#             nn.Tanh(),
-#             nn.Dropout(0.2),
-#             nn.Linear(70, 40)
-#         )
-#         self.decoder = nn.Sequential(
-#             nn.ReLU(inplace=True),
-#             nn.Linear(40, 40),
-#             nn.Tanh(),
-#             nn.Dropout(0.2),
-#             nn.Linear(40, 70),
-#             nn.Tanh(),
-#             nn.Dropout(0.2),
-#             nn.Linear(70, f_in)
-#         )
-
-#     def forward(self, x):
-#         x = self.encoder(x)
-#         x = self.decoder(x)
-#         return x
+import get_config
 
 def record_last(last_date_info):
     file = open('last_date.pkl', 'wb')
@@ -53,14 +26,12 @@ def change_permission(dir_path, sudoPassword):
     paths = dir_path.split('/')
     path = '/'.join(paths[:3])
     try:
-        if oct(os.stat(path).st_mode)[-3:] == '777':
-            return
-        else:
-            cmd = f"sudo chmod 777 -R {path}"
-            subprocess.run(['sudo', '-S', *cmd.split()], input=sudoPassword.encode(), check=True)
-            return
+        cmd = f"sudo chmod 777 -R {path}"
+        subprocess.run(['sudo', '-S', *cmd.split()], input=sudoPassword.encode(), check=True)
     except:
-        return
+        pass
+
+    return
 
 def unzip(dir_path, sudoPassword):
     gz_files = glob.glob(f'{dir_path}/**/*.json.gz', recursive=True)
@@ -112,7 +83,16 @@ def createDB(database, dir_path, sudoPassword):
                     last_date_info = [f'{year_}-{month_dict[month]}-{day}', len(lines)]
                     record_last(last_date_info)
                 try:
-                    json_lines = [json.loads(line) for line in lines]
+                    # json_lines = [json.loads(line) for line in lines]
+                    json_lines = []
+                    for line in lines:
+                        # 檢查 line 是否為空
+                        if line.strip():
+                            try:
+                                json_data = json.loads(line)
+                                json_lines.append(json_data)
+                            except json.decoder.JSONDecodeError as e:
+                                print(f"Error decoding JSON: {e}. Skipping line.")
                     num += len(lines)
                 except:
                     error_file = json_files[i]
@@ -123,16 +103,16 @@ def createDB(database, dir_path, sudoPassword):
         print(f'重新 insert {error_file}')
         f = open(error_file, 'r', errors='replace')
         lines = f.readlines()
-        json_lines = [json.loads(line) for line in lines]
-        # json_lines = []
-        # for line in lines:
-        #     # 檢查 line 是否為空
-        #     if line.strip():
-        #         try:
-        #             json_data = json.loads(line)
-        #             json_lines.append(json_data)
-        #         except json.decoder.JSONDecodeError as e:
-        #             print(f"Error decoding JSON: {e}. Skipping line.")
+        # json_lines = [json.loads(line) for line in lines]
+        json_lines = []
+        for line in lines:
+            # 檢查 line 是否為空
+            if line.strip():
+                try:
+                    json_data = json.loads(line)
+                    json_lines.append(json_data)
+                except json.decoder.JSONDecodeError as e:
+                    print(f"Error decoding JSON: {e}. Skipping line.")
         num += len(lines)
         database.insert_many(json_lines)
     return num
@@ -194,7 +174,7 @@ def createnidsDB(database, dir_path, sudoPassword):
         database.insert_many(log_lines)
     return num
 
-def filter_and_sort_pcap(directory_path, min_size_mb=9):
+def filter_and_sort_pcap(directory_path, min_size_mb=9.5):
     # 取得目錄中所有檔案
     files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
 
@@ -210,6 +190,7 @@ def pcap_to_csv(dir_path, pcap):
     os.system(cmd)
 
 def AEpredict(file_name, model_path, threshold=0.05, batch_size=32):
+    config = get_config.get_variable()
     df = pd.read_csv(file_name)
     df = df.drop(['timestamp', 'src_ip', 'dst_ip'], axis=1)
     cleaned_df = df.dropna()
@@ -222,7 +203,7 @@ def AEpredict(file_name, model_path, threshold=0.05, batch_size=32):
     data_loader = DataLoader(data, batch_size=batch_size, shuffle=False)
     
     model = AutoEncoder(79)  # 確保 input_size 和 hidden_size 與模型訓練時相同
-    model = torch.load("/home/ncku/Desktop/NCKU_IIot_SEC/anomaly_AE_new.pth", map_location=torch.device('cpu'))
+    model = torch.load(config["model_path"], map_location=torch.device('cpu'))
     model.cpu()
     model.eval()
 
@@ -263,7 +244,7 @@ def createaiDB(database, dir_path):
             database.insert_many(data) # insert data into mongoDB
             cmd1 = f"rm {dir_path + pcap}"
             cmd2 = f"rm {config['csvdirpath']}{pcap}.csv"
-            os.system(cmd1)# model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+            os.system(cmd1) 
             os.system(cmd2)
         except Exception as e:
             print(e)

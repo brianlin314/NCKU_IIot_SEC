@@ -204,7 +204,6 @@ def serve_layout():
 
 def callback_usb(input_button_clicks, account, password, clickedKey, input_value, input_value_again):
     check=0
-    config = get_config.get_variable()
     if config['dash_user_name'] == account and config['dash_user_password'] == password:
         if input_value == input_value_again:
             #read json file and write new one

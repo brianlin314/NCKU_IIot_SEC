@@ -1,46 +1,31 @@
 import pandas as pd
 from database import get_db
+import get_config
 
 def default():
-    global posts, model_path, usb_add_options, sudoPassword, dir_path, agent_ip, agent_id, nids_agent_options, hids_agent_options, current_db, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num, hidsdirpath, nidsdirpath, pcapdirpath, csvdirpath
-    sudoPassword = 'ncku' # 虛擬機密碼
-    dir_path = '/var/ossec/logs/alerts'
-    hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
-    nidsdirpath = '/var/log/suricata/'  # nids存放路徑 不包含檔名
-    pcapdirpath = './wirepcap/pcap/' 
-    csvdirpath = './wirepcap/csv/' 
-    model_path = 'cic_xgboost.bin'
-    nids_agent_options = [               # pages 底下的 agent 下拉式選單選項               
-        {'label': 'Server', 'value': 'Server'},
-        {'label': 'PCs', 'value': 'PCs'},
-    ] 
-    hids_agent_options = [            # pages 底下的 agent 下拉式選單選項               
-        {'label': 'Server', 'value': 'Server'},
-        {'label': 'PC_1', 'value': 'PC_1'},
-        {'label': 'PC_2', 'value': 'PC_2'},
-        {'label': 'PC_3', 'value': 'PC_3'},
-    ] 
-    usb_add_options = [
-    	{'label':'Server','value':'000'},
-	    {'label':'PC_1','value':'001'},
-        {'label':'PC_2','value':'002'},
-        {'label':'PC_3','value':'003'},
-    ]
-    agent_ip = {'Server' : '192.168.65.7', 'PCs' : '140.116.82.52'}
-    agent_id = {'Server' : '000', 'PC_1' : '001', 'PC_2' : '002', 'PC_3' : '003'}
+    global usb_add_options, dir_path, agent_ip, agent_id, nids_agent_options, hids_agent_options
+    config = get_config.get_variable()
+    # dir_path = '/var/ossec/logs/alerts'
+    # hidsdirpath = '/var/ossec/logs/alerts/' # ('放你的wazuhlog存放路徑 不包含年月日'+'/'+today.year+'/'+today.strftime("%b")+'/ossec-alerts-'+today.day+'.json')
+    # nidsdirpath = '/var/log/suricata/'  # nids存放路徑 不包含檔名
+    # pcapdirpath = './wirepcap/pcap/' 
+    # csvdirpath = './wirepcap/csv/' 
+    # model_path = 'cic_xgboost.bin'
+    nids_agent_options = config["nids_agent_options"] # pages 底下的 agent 下拉式選單選項
+    hids_agent_options = config["hids_agent_options"] # pages 底下的 agent 下拉式選單選項
+    usb_add_options = config["usb_add_options"] # pages 底下的 agent 下拉式選單選項
+    agent_ip = config["agent_ip"] # agent ip
+    agent_id = config["agent_id"] # agent id
     
 def initialize():
-    global airesult, ai_num, current_ai_db, posts, current_db, nidsjson, n_num, first, selected_fields, current_nids_db, n_selected_fields, add_next_click, all_fields, fields_num
+    global posts, first, selected_fields, n_selected_fields, add_next_click, all_fields, fields_num
+    config = get_config.get_variable()
     first = 1
-    sudoPassword = 'ncku' # 虛擬機密碼
-    dir_path = '/var/ossec/logs/alerts'
-    nidsdirpath = '/var/log/suricata/'
-    pcapdirpath = './wirepcap/pcap/' 
     selected_fields = []
     n_selected_fields = []
-    _, posts, num, current_db, = get_db.get_current_db(dir_path, sudoPassword)
-    _, nidsjson, n_num, current_nids_db, = get_db.get_current_nidsdb(nidsdirpath , sudoPassword)
-    _, airesult, ai_num, current_ai_db, = get_db.get_current_aidb(pcapdirpath , sudoPassword)
+    _, posts, num, current_db, = get_db.get_current_db(config["hidsdirpath"], config["sudoPassword"])
+    _, nidsjson, n_num, current_nids_db, = get_db.get_current_nidsdb(config["nidsdirpath"] , config["sudoPassword"])
+    _, airesult, ai_num, current_ai_db, = get_db.get_current_aidb(config["pcapdirpath"] , config["sudoPassword"])
     all_fields, fields_num = get_fields(posts)
     add_next_click = [1 for i in range(fields_num)]
 
@@ -48,5 +33,8 @@ def get_fields(posts):
     data = posts.find({}, {'_id':0})
     df = pd.json_normalize(data)
     all_fields = list(df.columns)
-    all_fields.remove('timestamp')
+    if 'timestamp' in all_fields:
+        all_fields.remove('timestamp')
+    else:
+        print("'timestamp' not found in all_fields")
     return all_fields, len(all_fields)

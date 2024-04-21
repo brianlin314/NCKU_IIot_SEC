@@ -92,6 +92,10 @@ def train_model(input_file, save_name):
         return "請確保檔案格式為 .pcap", 0
     
     output_csv = input_file.replace('.pcap', '.csv')
+
+    if not os.path.exists('./train_csv'):
+        os.makedirs('./train_csv')
+        
     output_csv_path = f"./train_csv/{output_csv}"
     try: 
         print("input_file:", input_file)

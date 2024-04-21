@@ -130,6 +130,16 @@ sidebar = html.Div(
                                     'component': 'Item',
                                     'props': 
                                             {  
+                                                'key': '/AI_Deploy',
+                                                'title': 'AI Deploy',
+                                                'icon': 'antd-deployment-unit',
+                                                'href': '/AI_Deploy'
+                                            }
+                                },
+                                {
+                                    'component': 'Item',
+                                    'props': 
+                                            {  
                                                 'key': '/USB',
                                                 'title': 'USB Logs',
                                                 'icon': 'antd-database',

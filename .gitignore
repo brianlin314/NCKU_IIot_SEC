@@ -4,3 +4,5 @@ __pycache__/
 *.json
 wirepcap/pcap/*
 wirepcap/csv/*
+train_csv/*
+!train_csv/.gitkeep

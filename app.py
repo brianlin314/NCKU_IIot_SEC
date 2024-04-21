@@ -6,16 +6,14 @@ import warnings
 import webbrowser
 
 import dash
-import globals_variable
-##########################
-##       引用內部函式    ##
-##########################
-from components import hide_sidebar, navbar
-from components.autoencoder_model import AutoEncoder
 from dash import callback, dcc, html
 from dash.dependencies import Input, Output, State
 from flask import Flask, send_from_directory, session
-from pages import (AI_prediction, add_agents, add_usb, discover, hids_logs,
+
+import globals_variable
+from components import hide_sidebar, navbar
+from components.autoencoder_model import AutoEncoder
+from pages import (AI_prediction, add_agents, add_usb, AI_deploy, discover, hids_logs,
                    history, home, login, nids_logs, non_exist, security_events,
                    statistics, usb)
 
@@ -100,6 +98,9 @@ def display_page(pathname): # 根據callack,返回所選頁面
 
     elif (pathname == '/AI_Prediction') and ('user' in session):
         view = AI_prediction.serve_layout()
+
+    elif (pathname == '/AI_Deploy') and ('user' in session):
+        view = AI_deploy.serve_layout()
 
     elif (pathname == '/USB') and ('user' in session):
         view = usb.serve_layout()
